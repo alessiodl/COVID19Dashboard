@@ -7,6 +7,7 @@
     "@fortawesome/fontawesome-free": "^5.12.1",
     "@turf/centroid": "^6.0.2",
     "axios": "^0.19.2",
+    "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "nouislider": "^14.1.1",
     "ol": "^6.1.1"
