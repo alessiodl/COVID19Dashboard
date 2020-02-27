@@ -30,4 +30,10 @@ var map = new Map({
       zoom: 6
     })
   });
+
+  fetch('./regioni.geojson')
+      .then(response => respose.json())
+      .then(data => {
+        console.log(data)
+      })
   
