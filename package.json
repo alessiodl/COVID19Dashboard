@@ -1,0 +1,31 @@
+{
+  "name": "COVID19Dashboard",
+  "version": "1.0.0",
+  "description": "COVID19 Italian Dashboard",
+  "main": "index.js",
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.12.1",
+    "axios": "^0.19.2",
+    "moment": "^2.24.0",
+    "nouislider": "^14.1.1",
+    "ol": "^6.1.1"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.12.4"
+  },
+  "scripts": {
+    "start": "parcel index.html",
+    "build": "parcel build --public-url . index.html --no-cache --no-source-maps"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alessiodl/COVID19Dashboard.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alessiodl/COVID19Dashboard/issues"
+  },
+  "homepage": "https://github.com/alessiodl/COVID19Dashboard#readme"
+}
