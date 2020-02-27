@@ -81893,7 +81893,7 @@ var map = new _Map.default({
   }), new _Vector.default({
     source: new _Vector2.default({
       format: new _GeoJSON.default(),
-      url: './regioni.geojson'
+      url: './data/regioni.geojson'
     })
   })],
   view: new _View.default({
@@ -81933,7 +81933,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55121" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55062" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

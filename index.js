@@ -30,7 +30,7 @@ var map = new Map({
       new VectorLayer({
         source: new VectorSource({
           format: new GeoJSON(),
-          url: './regioni.geojson'
+          url: './data/regioni.geojson'
         })
       })
     ],
