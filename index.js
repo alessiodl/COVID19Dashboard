@@ -4,7 +4,10 @@ import 'ol/ol.css';
 import Map from 'ol/Map';
 import View from 'ol/View';
 import {fromLonLat, transform} from 'ol/proj';
-import {Tile as TileLayer, Image as ImageLayer} from 'ol/layer';
+import {Tile as TileLayer} from 'ol/layer';
+import GeoJSON from 'ol/format/GeoJSON';
+import VectorLayer from 'ol/layer/Vector';
+import VectorSource from 'ol/source/Vector';
 import {OSM} from 'ol/source';
 
 import axios from 'axios';
@@ -13,7 +16,7 @@ import 'nouislider/distribute/nouislider.min.css';
 import noUiSlider from 'nouislider'
 import moment from 'moment';
 
-const data_url = "https://covid19-it-api.herokuapp.com/data";
+const url = "https://covid19-it-api.herokuapp.com";
 
 // *******************************************
 // Map
@@ -23,6 +26,12 @@ var map = new Map({
     layers: [
       new TileLayer({
         source: new OSM()
+      }),
+      new VectorLayer({
+        source: new VectorSource({
+          format: new GeoJSON(),
+          url: './regioni.geojson'
+        })
       })
     ],
     view: new View({
@@ -31,9 +40,10 @@ var map = new Map({
     })
   });
 
-  fetch('./regioni.geojson')
-      .then(response => respose.json())
-      .then(data => {
-        console.log(data)
-      })
+
+  // Get COVID19 CPD Data
+  axios.get(url+'/data',{
+  }).then(function(response){
+    console.log(response)
+  });
   
