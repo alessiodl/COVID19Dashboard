@@ -9,33 +9,51 @@
     <header>
       <nav class="navbar navbar-dark fixed-top" style="background-color: #4a148c;">
         <a class="navbar-brand" href="#" id="dashboard-title">
-          <i class="fas fa-cog fa-lg fa-spin"></i> <span >Aggiorno le informazioni...</span>
+          <i class="fas fa-cog fa-lg fa-spin"></i> <span >Aggiorno...</span>
         </a>
       </nav>
     </header>
     <main>
       <div class="container-fluid"></div>
         <div class="row">
-          <div class="col-md-7">
+          <div class="col-lg-6">
             <div id="map" class="map"></div>
           </div>
-          <div class="col-md-5">
+          <div class="col-lg-6">
             <div id="bullettin">
               <!-- Bullettin info -->
-              <div class="card">
+              <div class="card text-white bg-dark">
+                <div class="card-header">
+                  <i class="fas fa-info-circle fa-lg"></i> Questa Dashboard
+                </div>
                 <div class="card-body">
                   <div id="last-update">
-                    <i class="far fa-clock"></i> Ultimo bollettino: <i class="fas fa-cog fa-spin"></i>
+                    <i class="far fa-calendar-alt"></i> Aggiorno <i class="fas fa-cog fa-spin"></i>
                   </div>
                   <div id="data-source">
-                    <i class="fas fa-link"></i> Origine delle informazioni: <i class="fas fa-cog fa-spin"></i>
+                    <i class="fas fa-link"></i> Aggiorno <i class="fas fa-cog fa-spin"></i>
                   </div>
+                  <br/>
+                  <p><i class="fas fa-info-circle"></i> I dati proposti derivano dal <a href="http://www.protezionecivile.gov.it/" target="_blank">
+                    Sito del Dipartimento della Protezione Civile - Presidenza del Consiglio dei Ministri</a> 
+                    attraverso una procedura di <a target="_blank" class="text-muted" href="https://it.wikipedia.org/wiki/Web_scraping"><i>web scraping</i></a>.<br/>
+                    Si rimanda alla sorgente per l'ufficialit&agrave; e la piena correttezza.</p>
+                </div>
+              </div>
+              <!-- Sommario -->
+              <div class="card mt-1 text-white bg-dark">
+                <div class="card-body">
+                  <ul class="list-group">
+                    <li class="list-group-item bg-dark">Accertati:</li>
+                    <li class="list-group-item bg-dark text-success">Guariti:</li>
+                    <li class="list-group-item bg-dark text-danger">Morti:</li>
+                  </ul>
                 </div>
               </div>
               <!-- Region chart -->
-              <div class="card mt-2">
+              <div class="card mt-1 text-white bg-dark">
+                <div class="card-header"><i class="far fa-chart-bar"></i> Casi per Regione</div>
                 <div class="card-body">
-                  <h6 class="card-title"><i class="far fa-chart-bar"></i> Casi per Regione</h6>
                   <canvas id="region-distribution-chart"></canvas>
                 </div>
               </div>
