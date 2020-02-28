@@ -187,7 +187,7 @@ const regionDistributionChart = function(data){
 			labels: labels,
 			datasets:[{
 				label: 'Casi accertati',
-				backgroundColor: '#CC0000',
+				backgroundColor: '#b71c1c',
 				borderColor: '#CC0000',
 				data: dataset,
 				fill: false

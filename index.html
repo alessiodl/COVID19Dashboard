@@ -7,7 +7,7 @@
   </head>
   <body>
     <header>
-      <nav class="navbar navbar-dark fixed-top" style="background-color: #4a148c;">
+      <nav class="navbar navbar-dark fixed-top bg-danger">
         <a class="navbar-brand" href="#" id="dashboard-title">
           <i class="fas fa-cog fa-lg fa-spin"></i> <span >Aggiorno...</span>
         </a>
@@ -15,11 +15,11 @@
     </header>
     <main>
       <div class="container-fluid"></div>
-        <div class="row">
+        <div class="row no-gutters">
           <div class="col-lg-6">
             <div id="map" class="map"></div>
           </div>
-          <div class="col-lg-6">
+          <div class="col-lg-6 bg-dark">
             <div id="bullettin">
               <!-- Bullettin info -->
               <div class="card text-white bg-dark">
@@ -34,9 +34,9 @@
                     <i class="fas fa-link"></i> Aggiorno <i class="fas fa-cog fa-spin"></i>
                   </div>
                   <br/>
-                  <p><i class="fas fa-info-circle"></i> I dati proposti derivano dal <a href="http://www.protezionecivile.gov.it/" target="_blank">
+                  <p><i class="fas fa-database"></i> I dati proposti derivano dal <a href="http://www.protezionecivile.gov.it/" target="_blank">
                     Sito del Dipartimento della Protezione Civile - Presidenza del Consiglio dei Ministri</a> 
-                    attraverso una procedura di <a target="_blank" class="text-muted" href="https://it.wikipedia.org/wiki/Web_scraping">web scraping</a>.<br/>
+                    attraverso una procedura di <a target="_blank" class="text-muted" href="https://it.wikipedia.org/wiki/Web_scraping">web scraping</a>. 
                     Si rimanda alla sorgente per l'ufficialit&agrave; e la piena correttezza.</p>
                 </div>
               </div>
@@ -51,7 +51,7 @@
                 </div>
               </div> -->
               <!-- Region chart -->
-              <div class="card mt-1 text-white bg-dark">
+              <div class="card text-white bg-dark">
                 <div class="card-header"><i class="far fa-chart-bar"></i> Casi per Regione</div>
                 <div class="card-body">
                   <canvas id="region-distribution-chart"></canvas>
