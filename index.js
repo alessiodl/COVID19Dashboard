@@ -160,11 +160,11 @@ const updateDashboardUI = function(data){
     // Dashboard title
     document.querySelector('#dashboard-title').innerHTML = '<i class="fas fa-tachometer-alt fa-lg"></i> '+ data[0].titolo
     // Update
-    document.querySelector('#last-update').innerHTML = '<i class="far fa-clock"></i> Ultimo bollettino: <strong>'+ moment(data[0].aggiornamento_del).format('DD/MM/YYYY HH:mm:ss') + '</strong>'
+    document.querySelector('#last-update').innerHTML = '<i class="far fa-clock"></i> Ultimo bollettino: <strong><span style="font-size:18px;">'+ moment(data[0].aggiornamento_del).format('DD/MM/YYYY HH:mm:ss') + '</span></strong>'
     // Info origin
     document.querySelector('#data-source').innerHTML = '<i class="fas fa-link"></i> Origine delle informazioni: <strong><a target="_blank" href="'+data[0].link+'">Bollettino della Protezione Civile</a><strong>'
     // Populate chart
-    regionDistributionChart(data[0].casi_accertati)
+    regionDistributionChart(data[0].casi_accertati);
 };
 
 let myChart;
@@ -198,12 +198,6 @@ const regionDistributionChart = function(data){
             legend:{
                 display:false
             }
-			/* onHover: function(evt) {
-				var item = myChart.getElementAtEvent(evt);
-				if (item.length) {
-					console.log(item, evt.type);
-				};
-			} */
 		}
 	});
 
