@@ -25,6 +25,7 @@ import noUiSlider from 'nouislider'
 import moment from 'moment';
 
 const url = "https://covid19-it-api.herokuapp.com";
+// const url = "http://127.0.0.1:5000";
 
 // *******************************************
 // Map
@@ -76,29 +77,29 @@ var centroidsLayer = new VectorImageLayer({
         const casi = parseInt(feature.get('casi'));
         var radius;
         if(casi >= 1 && casi <= 5){
-            radius = 8;
+            radius = 4;
         } else if(casi >= 6 && casi <= 15) {
-            radius = 12;
+            radius = 10;
         } else if (casi >= 16 && casi <= 30) {
-            radius = 24;
+            radius = 15;
         } else if (casi >= 31 && casi <= 50) {
-            radius = 35;
+            radius = 18;
         } else if (casi >= 51 && casi <= 70){
-            radius = 45;
+            radius = 22;
         } else if (casi >= 71 && casi <= 100){
-            radius = 55;
+            radius = 30;
         } else if (casi >= 101 && casi <= 150){
-            radius = 65;
+            radius = 40;
         } else if (casi >= 151 && casi <= 200){
-            radius = 75;
+            radius = 50;
         } else if (casi >= 201 && casi <= 250){
-            radius = 85;
+            radius = 60;
         } else if (casi >= 251 && casi <= 300){
-            radius = 95;
+            radius = 70;
         } else if (casi >= 301 && casi <= 400){
-            radius = 110;
+            radius = 80;
         } else {
-            radius = 120;
+            radius = 100;
         }
 
         return new Style({
