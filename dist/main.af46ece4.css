@@ -1,25 +1,6 @@
-body {
-    padding: 0;
-    margin: 0;
-}
-
-html, body, #map {
-    height: 100%;
+#map {
+    height: 100vh;
     width: 100%;
-}
-
-.tools {
-    width: 350px;
-    height: auto;
-    z-index: 100001;
-    position: absolute;
-    top:10px;
-    right:10px;
-    background-color: rgba(55,71,79,.75);
-    border: 3px solid rgba(255,255,255, .4);
-    border-radius: 3px;
-    padding: 20px;
-    color: white;
 }
 
 .ol-zoom-in, .ol-zoom-out {

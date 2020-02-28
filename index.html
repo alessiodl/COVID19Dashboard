@@ -3,15 +3,48 @@
     <title>COVID19 Italia</title>
     <!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
     <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
-    <link rel="stylesheet" href="./main.css">
+    
   </head>
   <body>
-    <div id="map" class="map">
-      <div id="tools" class="tools">
-          
+    <header>
+      <nav class="navbar navbar-dark fixed-top" style="background-color: #4a148c;">
+        <a class="navbar-brand" href="#" id="dashboard-title">
+          <i class="fas fa-cog fa-lg fa-spin"></i> <span >Aggiorno le informazioni...</span>
+        </a>
+      </nav>
+    </header>
+    <main>
+      <div class="container-fluid"></div>
+        <div class="row">
+          <div class="col-md-7">
+            <div id="map" class="map"></div>
+          </div>
+          <div class="col-md-5">
+            <div id="bullettin">
+              <!-- Bullettin info -->
+              <div class="card">
+                <div class="card-body">
+                  <div id="last-update">
+                    <i class="far fa-clock"></i> Ultimo bollettino: <i class="fas fa-cog fa-spin"></i>
+                  </div>
+                  <div id="data-source">
+                    <i class="fas fa-link"></i> Origine delle informazioni: <i class="fas fa-cog fa-spin"></i>
+                  </div>
+                </div>
+              </div>
+              <!-- Region chart -->
+              <div class="card mt-2">
+                <div class="card-body">
+                  <h6 class="card-title"><i class="far fa-chart-bar"></i> Casi per Regione</h6>
+                  <canvas id="region-distribution-chart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-
+    </main>
+    
     <script src="./index.js"></script>
   </body>
 </html>

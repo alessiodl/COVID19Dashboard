@@ -1,0 +1,40 @@
+body {
+    margin-top: 55px;
+    overflow-x:hidden;
+}
+
+#map {
+    width: 100%;
+    height: calc(100vh - 55px);
+}
+
+#bullettin {
+    padding: 15px 30px 15px 0;
+    width: 100%;
+    height: calc(100vh - 55px); 
+}
+
+.ol-control {
+    border-radius: 1px !important;
+    padding: 0px !important;
+}
+
+.ol-control button {
+    font-size: 1.24em !important;
+    height: 1.575em !important;
+    width: 1.575em !important;
+    background-color:rgb(74,20,140) !important;
+    opacity:0.85 !important;
+}
+
+.ol-control-button, .ol-zoom-in, .ol-zoom-out {
+    background-color:rgb(74,20,140) !important;
+    opacity:0.85 !important;
+}
+  
+.ol-zoom-in:hover{
+    opacity:0.75 !important;
+}
+.ol-zoom-out:hover{
+    opacity:0.75 !important;
+}

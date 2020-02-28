@@ -10,12 +10,15 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorImageLayer from 'ol/layer/VectorImage';
 import VectorSource from 'ol/source/Vector';
 import {Fill, Stroke, Style, Text, Image, Circle} from 'ol/style';
-import {OSM} from 'ol/source';
 import XYZ from 'ol/source/XYZ';
 import '@turf/centroid';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './main.scss'
 
 import axios from 'axios';
-import lodash from 'lodash'
+import lodash from 'lodash';
+
+import 'chart.js';
 
 import 'nouislider/distribute/nouislider.min.css';
 import noUiSlider from 'nouislider'
@@ -40,7 +43,7 @@ var map = new Map({
         })
     ],
     view: new View({
-      center: fromLonLat([14, 42]),
+      center: fromLonLat([13.245209,42.304227]),
       zoom: 6
     })
 });
@@ -138,8 +141,10 @@ axios.get(url+'/data',{}).then(function(response){
     var last_dpc_bullettin = lodash.filter(dpc_bullettins, function(o) { 
         return moment(o.aggiornamento_del).format('YYYY-MM-DD HH:mm:ss') == last_dpc_bullettin_date; 
     });
-
-    // console.log(last_dpc_bullettin);
+    console.log(last_dpc_bullettin);
+    // Update dashboard
+    updateDashboardUI(last_dpc_bullettin);
+    // Update centroids layer
     var features = last_dpc_bullettin[0].casi_accertati;
     var reprojected_features = []
     features.forEach(function(feature){
@@ -149,5 +154,57 @@ axios.get(url+'/data',{}).then(function(response){
     var collection = {"type": "FeatureCollection", "features": reprojected_features};
     var featureCollection = new GeoJSON().readFeatures(collection);
     centroidsLayer.getSource().addFeatures(featureCollection);
-    
 });
+
+const updateDashboardUI = function(data){
+    // Dashboard title
+    document.querySelector('#dashboard-title').innerHTML = '<i class="fas fa-tachometer-alt fa-lg"></i> '+ data[0].titolo
+    // Update
+    document.querySelector('#last-update').innerHTML = '<i class="far fa-clock"></i> Ultimo bollettino: <strong>'+ moment(data[0].aggiornamento_del).format('DD/MM/YYYY HH:mm:ss') + '</strong>'
+    // Info origin
+    document.querySelector('#data-source').innerHTML = '<i class="fas fa-link"></i> Origine delle informazioni: <strong><a target="_blank" href="'+data[0].link+'">Bollettino della Protezione Civile</a><strong>'
+    // Populate chart
+    regionDistributionChart(data[0].casi_accertati)
+};
+
+let myChart;
+const regionDistributionChart = function(data){
+    // Dataset
+    var dataset = [];
+    var labels = [];
+    data.forEach(function(element){
+        dataset.push(element.properties.casi);
+        labels.push(element.properties.regione);
+    })
+
+    // Grafico
+	var ctx = document.getElementById('region-distribution-chart').getContext('2d');
+    if (myChart) { myChart.destroy(); }
+    
+    myChart = new Chart(ctx, {
+		type: 'horizontalBar',
+		data: {
+			labels: labels,
+			datasets:[{
+				label: 'Casi accertati',
+				backgroundColor: '#CC0000',
+				borderColor: '#CC0000',
+				data: dataset,
+				fill: false
+			}]
+		},
+		options: {
+            responsive:true,
+            legend:{
+                display:false
+            }
+			/* onHover: function(evt) {
+				var item = myChart.getElementAtEvent(evt);
+				if (item.length) {
+					console.log(item, evt.type);
+				};
+			} */
+		}
+	});
+
+}
