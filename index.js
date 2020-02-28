@@ -9,8 +9,9 @@ import GeoJSON from 'ol/format/GeoJSON';
 import VectorLayer from 'ol/layer/Vector';
 import VectorImageLayer from 'ol/layer/VectorImage';
 import VectorSource from 'ol/source/Vector';
-import {Style, Fill, Stroke} from 'ol/style';
+import {Fill, Stroke, Style, Text, Image, Circle} from 'ol/style';
 import {OSM} from 'ol/source';
+import XYZ from 'ol/source/XYZ';
 import '@turf/centroid';
 
 import axios from 'axios';
@@ -19,19 +20,24 @@ import lodash from 'lodash'
 import 'nouislider/distribute/nouislider.min.css';
 import noUiSlider from 'nouislider'
 import moment from 'moment';
-import centroid from '@turf/centroid';
 
 const url = "https://covid19-it-api.herokuapp.com";
 
 // *******************************************
 // Map
 // *******************************************
+
+
 var map = new Map({
     target: 'map',
     layers: [
-      new TileLayer({
-        source: new OSM()
-      })
+        new TileLayer({
+            source: new XYZ({
+                attributions:'CoViD-19 Data Source &copy; <a href="http://www.protezionecivile.gov.it/" target="_blank">'+
+                             'Sito del Dipartimento della Protezione Civile - Presidenza del Consiglio dei Ministri</a>',
+                url: 'http://{a-c}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'
+            })
+        })
     ],
     view: new View({
       center: fromLonLat([14, 42]),
@@ -56,18 +62,55 @@ var regionsLayer = new VectorImageLayer({
         })
     })
 });
-map.addLayer(regionsLayer);
+// map.addLayer(regionsLayer);
 
 // Regions centroids
 var centroidsLayer = new VectorImageLayer({
     source: new VectorSource({
         format: new GeoJSON()
-    })
+    }),
+    style: function(feature) {
+        const casi = parseInt(feature.get('casi'));
+        var radius;
+        if(casi >= 1 && casi <= 5){
+            radius = 8;
+        } else if(casi >= 6 && casi <= 15) {
+            radius = 12;
+        } else if (casi >= 16 && casi <= 30) {
+            radius = 24;
+        } else if (casi >= 31 && casi <= 50) {
+            radius = 35;
+        } else if (casi >= 51 && casi <= 70){
+            radius = 45;
+        } else if (casi >= 71 && casi <= 100){
+            radius = 55;
+        } else if (casi >= 101 && casi <= 150){
+            radius = 65;
+        } else if (casi >= 151 && casi <= 200){
+            radius = 75;
+        } else if (casi >= 201 && casi <= 250){
+            radius = 85;
+        } else if (casi >= 251 && casi <= 300){
+            radius = 95;
+        } else if (casi >= 301 && casi <= 400){
+            radius = 110;
+        } else {
+            radius = 120;
+        }
+
+        return new Style({
+            image: new Circle({
+                radius: radius,
+                fill: new Fill({color: 'rgba(255,0,0,.5)' }),
+	            stroke: new Stroke({color: '#CC0000', width: 2})
+            })
+        })
+        
+    }
 });
 map.addLayer(centroidsLayer);
 
 // Get Map Layers Data
-var centroidsCollection;
 axios.get('https://webgis.izs.it/arcgis/rest/services/ISTAT_ADMIN/MapServer/2/query',{
     params:{
         where: " 1=1 ",
@@ -82,14 +125,6 @@ axios.get('https://webgis.izs.it/arcgis/rest/services/ISTAT_ADMIN/MapServer/2/qu
     var collection = {"type": "FeatureCollection", "features": features};
     var featureCollection = new GeoJSON().readFeatures(collection);
     regionsLayer.getSource().addFeatures(featureCollection);
-    // Populate cetroids
-    var centroids = [];
-    features.forEach(feature => {
-        centroids.push(centroid(feature, {properties:{properties:{"denominazione":feature.properties.DEN_REG,"casi_accertati":0}}}));
-    });
-    centroidsCollection = new GeoJSON().readFeatures({"type": "FeatureCollection", "features": centroids});
-    centroidsLayer.getSource().addFeatures(centroidsCollection);
-    // console.log(centroidsCollection)
 });
 
 // Get COVID19 CPD Data
@@ -104,10 +139,15 @@ axios.get(url+'/data',{}).then(function(response){
         return moment(o.aggiornamento_del).format('YYYY-MM-DD HH:mm:ss') == last_dpc_bullettin_date; 
     });
 
-    console.log(last_dpc_bullettin);
-
-    // var points = centroidsLayer.getSource().getFeatures();
-    centroidsCollection.forEach(function(point){
-        console.log(point) 
-    });
+    // console.log(last_dpc_bullettin);
+    var features = last_dpc_bullettin[0].casi_accertati;
+    var reprojected_features = []
+    features.forEach(function(feature){
+        var obj = {"type":"Feature","properties":feature.properties, "geometry":{"type":"Point",coordinates:new transform(feature.geometry.coordinates,'EPSG:4326','EPSG:3857')}}
+        reprojected_features.push(obj)
+    })
+    var collection = {"type": "FeatureCollection", "features": reprojected_features};
+    var featureCollection = new GeoJSON().readFeatures(collection);
+    centroidsLayer.getSource().addFeatures(featureCollection);
+    
 });
