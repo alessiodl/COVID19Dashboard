@@ -297,20 +297,21 @@ body {
   /* padding: 15px 30px 15px 0;*/
   width: 100%;
   height: calc(100vh - 55px);
+  overflow-y: scroll;
 }
 
 .card, .list-group-item {
   border-radius: 0px !important;
 }
 
+/*
 #bullettin > .card a:visited {
-  color: #e0e0e0 !important;
+    color: #e0e0e0 !important;
 }
 
 #bullettin > .card a:active {
-  color: #e0e0e0 !important;
-}
-
+    color: #e0e0e0 !important;
+}*/
 #map {
   width: 100%;
   height: calc(100vh - 55px);

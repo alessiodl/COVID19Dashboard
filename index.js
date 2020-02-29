@@ -138,11 +138,16 @@ axios.get(url+'/data',{}).then(function(response){
     dpc_bullettins.forEach(function(resp){
         dpc_bullettins_dates.push(moment(resp.aggiornamento_del).format('YYYY-MM-DD HH:mm:ss'))
     });
-    var last_dpc_bullettin_date =  dpc_bullettins_dates.sort().reverse()[0];
+    var last_dpc_bullettin_date = dpc_bullettins_dates.sort().reverse()[0];
     var last_dpc_bullettin = lodash.filter(dpc_bullettins, function(o) { 
         return moment(o.aggiornamento_del).format('YYYY-MM-DD HH:mm:ss') == last_dpc_bullettin_date; 
     });
-    console.log(last_dpc_bullettin);
+
+    // console.log('ultimo bottettino:', last_dpc_bullettin);
+    // console.log('tutti i bottettini:', dpc_bullettins);
+
+    // Buld total cases for bullettin chart
+    casesDiffusionChart(dpc_bullettins);
     // Update dashboard
     updateDashboardUI(last_dpc_bullettin);
     // Update centroids layer
@@ -163,12 +168,12 @@ const updateDashboardUI = function(data){
     // Update
     document.querySelector('#last-update').innerHTML = '<i class="far fa-calendar-alt"></i> <strong><span style="font-size:18px;">'+ moment(data[0].aggiornamento_del).format('DD/MM/YYYY HH:mm:ss') + '</span></strong>'
     // Info origin
-    document.querySelector('#data-source').innerHTML = '<i class="fas fa-link"></i> <strong><a target="_blank" href="'+data[0].link+'">Bollettino della Protezione Civile</a><strong>'
+    document.querySelector('#data-source').innerHTML = '<i class="fas fa-link"></i> <strong><a class="text-warning" target="_blank" href="'+data[0].link+'">Bollettino della Protezione Civile</a><strong>'
     // Populate chart
     regionDistributionChart(data[0].casi_accertati);
 };
 
-let myChart;
+let regChart;
 const regionDistributionChart = function(data){
     // Dataset
     var dataset = [];
@@ -180,9 +185,9 @@ const regionDistributionChart = function(data){
 
     // Grafico
 	var ctx = document.getElementById('region-distribution-chart').getContext('2d');
-    if (myChart) { myChart.destroy(); }
+    if (regChart) {regChart.destroy(); }
     
-    myChart = new Chart(ctx, {
+    regChart = new Chart(ctx, {
 		type: 'horizontalBar',
 		data: {
 			labels: labels,
@@ -213,5 +218,64 @@ const regionDistributionChart = function(data){
             }
 		}
 	});
+}
 
+let totChart;
+const casesDiffusionChart = function(bullettins){
+    bullettins = bullettins.sort(bullettin_sorter)
+    // Dataset
+    var total_cases = []
+    var bullettin_dates = []
+    bullettins.forEach(b =>{
+        total_cases.push(parseInt(b.titolo.match(/\d+/g))) // Take total number from bullettin title
+        bullettin_dates.push(moment(b.aggiornamento_del).format('DD/MM/YYYY HH:mm'))
+    });
+    console.log(total_cases)
+    console.log(bullettin_dates)
+    // Grafico
+	var ctx = document.getElementById('total-cases-chart').getContext('2d');
+    if (totChart) {totChart.destroy(); }
+    
+    totChart = new Chart(ctx, {
+		type: 'line',
+		data: {
+			labels: bullettin_dates,
+			datasets:[{
+				label: 'Casi accertati',
+				backgroundColor: '#b71c1c',
+				borderColor: '#CC0000',
+				data: total_cases,
+				fill: false
+			}]
+		},
+		options: {
+            responsive:true,
+            legend:{
+                display:false
+            },
+            scales: {
+                yAxes:[{
+                    ticks:{
+                        fontColor:'#FFF'
+                    }
+                }],
+                xAxes:[{
+                    ticks:{
+                        fontColor:'#FFF'
+                    }
+                }]
+            }
+		}
+	});
+}
+
+// Custo sorting function useful for order DPC bullettis by their emission date
+const bullettin_sorter = function( a, b ) {
+    if ( moment(a.aggiornamento_del).format('YYYY-MM-DD HH:mm:ss') < moment(b.aggiornamento_del).format('YYYY-MM-DD HH:mm:ss') ){
+      return -1;
+    }
+    if ( moment(a.aggiornamento_del).format('YYYY-MM-DD HH:mm:ss') > moment(b.aggiornamento_del).format('YYYY-MM-DD HH:mm:ss') ){
+      return 1;
+    }
+    return 0;
 }
