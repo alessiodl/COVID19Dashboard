@@ -166,7 +166,7 @@ const updateDashboardUI = function(data){
     // Dashboard title
     document.querySelector('#dashboard-title').innerHTML = '<i class="fas fa-tachometer-alt fa-lg"></i> '+ data[0].titolo
     // Update
-    document.querySelector('#last-update').innerHTML = '<i class="far fa-calendar-alt"></i> <strong><span style="font-size:18px;">'+ moment(data[0].aggiornamento_del).format('DD/MM/YYYY HH:mm:ss') + '</span></strong>'
+    document.querySelector('#last-update').innerHTML = '<i class="far fa-calendar-alt"></i> <strong><span style="font-size:18px;">'+ moment(data[0].aggiornamento_del).format('DD/MM/YYYY HH:mm') + '</span></strong>'
     // Info origin
     document.querySelector('#data-source').innerHTML = '<i class="fas fa-link"></i> <strong><a class="text-warning" target="_blank" href="'+data[0].link+'">Bollettino della Protezione Civile</a><strong>'
     // Populate chart
