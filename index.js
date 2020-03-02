@@ -30,8 +30,6 @@ const url = "https://covid19-it-api.herokuapp.com";
 // *******************************************
 // Map
 // *******************************************
-
-
 var map = new Map({
     target: 'map',
     layers: [
@@ -52,21 +50,6 @@ var map = new Map({
 // *******************************************
 // LAYERS
 // *******************************************
-// Regions polygons
-var regionsLayer = new VectorImageLayer({
-    source: new VectorSource({
-        format: new GeoJSON()
-    }),
-    style: new Style({
-        fill: new Fill({
-          color: 'rgba(55,71,79,.75)',
-        }),
-        stroke: new Stroke({
-          color: 'white'
-        })
-    })
-});
-// map.addLayer(regionsLayer);
 
 // Regions centroids
 var centroidsLayer = new VectorImageLayer({
@@ -114,23 +97,6 @@ var centroidsLayer = new VectorImageLayer({
 });
 map.addLayer(centroidsLayer);
 
-// Get Map Layers Data
-axios.get('https://webgis.izs.it/arcgis/rest/services/ISTAT_ADMIN/MapServer/2/query',{
-    params:{
-        where: " 1=1 ",
-        returnGeometry: true,
-        outFields: 'DEN_REG',
-        outSR: '3857',
-        f: 'geojson'
-    }
-}).then(function(response){
-    // console.log(response.data.features);
-    var features = response.data.features;
-    var collection = {"type": "FeatureCollection", "features": features};
-    var featureCollection = new GeoJSON().readFeatures(collection);
-    regionsLayer.getSource().addFeatures(featureCollection);
-});
-
 // Get COVID19 CPD Data
 axios.get(url+'/data',{}).then(function(response){
     var dpc_bullettins = response.data;
@@ -150,6 +116,8 @@ axios.get(url+'/data',{}).then(function(response){
     casesDiffusionChart(dpc_bullettins);
     // Update dashboard
     updateDashboardUI(last_dpc_bullettin);
+    // Build slider
+    // buildSlider(dpc_bullettins);
     // Update centroids layer
     var features = last_dpc_bullettin[0].casi_accertati;
     var reprojected_features = []
@@ -161,6 +129,44 @@ axios.get(url+'/data',{}).then(function(response){
     var featureCollection = new GeoJSON().readFeatures(collection);
     centroidsLayer.getSource().addFeatures(featureCollection);
 });
+
+// Build slider
+const buildSlider = function(bullettins){
+
+    bullettins = bullettins.sort(bullettin_sorter);
+
+    var range_obj = {}
+    var bullettin_dates = []
+
+    bullettins.forEach((b,i) =>{
+        if (i > 0 && i < bullettins.length-1){
+            // console.log(Math.ceil((100/bullettins.length) * i))
+            var date = moment(b.aggiornamento_del).format('DD/MM/YYYY HH:mm:ss')
+            range_obj[Math.ceil((100/bullettins.length) * i)+'%'] = moment(date,'DD/MM/YYYY HH:mm:ss').valueOf()
+        }
+        bullettin_dates.push(moment(b.aggiornamento_del).format('DD/MM/YYYY HH:mm:ss'))
+    });
+    
+    range_obj = Object.assign({min: moment(bullettin_dates[0],'DD/MM/YYYY HH:mm:ss').valueOf()}, range_obj);
+    range_obj = Object.assign(range_obj, {max: moment(bullettin_dates[bullettin_dates.length-1],'DD/MM/YYYY HH:mm:ss').valueOf()});
+    console.log(range_obj)
+
+    var slider = document.querySelector('#slider');
+    noUiSlider.create(slider, {
+        start: moment(bullettin_dates[bullettin_dates.length-1],'DD/MM/YYYY HH:mm:ss').valueOf(),
+        snap:true,
+        connect: true,
+        range: range_obj
+    });
+    
+    slider.noUiSlider.on('update', function (values, handle) {
+        //console.log(parseInt(values[0]),handle)
+        var current_slider_date = moment(parseInt(values[0])).format('DD/MM/YYYY HH:mm:ss')
+        console.log(current_slider_date)
+        
+    });
+
+}
 
 const updateDashboardUI = function(data){
     // Dashboard title
@@ -222,7 +228,7 @@ const regionDistributionChart = function(data){
 
 let totChart;
 const casesDiffusionChart = function(bullettins){
-    bullettins = bullettins.sort(bullettin_sorter)
+    bullettins = bullettins.sort(bullettin_sorter);
     // Dataset
     var total_cases = []
     var bullettin_dates = []
@@ -230,8 +236,8 @@ const casesDiffusionChart = function(bullettins){
         total_cases.push(parseInt(b.titolo.match(/\d+/g))) // Take total number from bullettin title
         bullettin_dates.push(moment(b.aggiornamento_del).format('DD/MM/YYYY HH:mm'))
     });
-    console.log(total_cases)
-    console.log(bullettin_dates)
+    // console.log(total_cases)
+    // console.log(bullettin_dates)
     // Grafico
 	var ctx = document.getElementById('total-cases-chart').getContext('2d');
     if (totChart) {totChart.destroy(); }

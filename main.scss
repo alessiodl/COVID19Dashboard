@@ -13,14 +13,6 @@ body {
 .card, .list-group-item {
     border-radius: 0px !important;
 }
-/*
-#bullettin > .card a:visited {
-    color: #e0e0e0 !important;
-}
-
-#bullettin > .card a:active {
-    color: #e0e0e0 !important;
-}*/
 
 #map {
     width: 100%;
@@ -50,4 +42,14 @@ body {
 }
 .ol-zoom-out:hover{
     opacity:0.75 !important;
+}
+
+#slider {
+    width: 90%;
+    height: 20px;
+    margin: 0 auto;
+}
+
+.noUi-touch-area {
+    background-color: rgb(183,28,28);;
 }
