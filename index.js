@@ -25,7 +25,6 @@ import noUiSlider from 'nouislider'
 import moment from 'moment';
 
 const url = "https://covid19-it-api.herokuapp.com";
-// const url = "http://127.0.0.1:5000";
 
 // *******************************************
 // Map
@@ -57,7 +56,7 @@ var centroidsLayer = new VectorImageLayer({
         format: new GeoJSON()
     }),
     style: function(feature) {
-        const casi = parseInt(feature.get('casi'));
+        const casi = parseInt(feature.get('numero_casi'));
         var radius;
         if(casi >= 1 && casi <= 5){
             radius = 4;
@@ -97,40 +96,39 @@ var centroidsLayer = new VectorImageLayer({
 });
 map.addLayer(centroidsLayer);
 
-// Get COVID19 CPD Data
-axios.get(url+'/data',{}).then(function(response){
-    var dpc_bullettins = response.data;
-    var dpc_bullettins_dates = []
-    dpc_bullettins.forEach(function(resp){
-        dpc_bullettins_dates.push(moment(resp.aggiornamento_del).format('YYYY-MM-DD HH:mm:ss'))
-    });
-    var last_dpc_bullettin_date = dpc_bullettins_dates.sort().reverse()[0];
-    var last_dpc_bullettin = lodash.filter(dpc_bullettins, function(o) { 
-        return moment(o.aggiornamento_del).format('YYYY-MM-DD HH:mm:ss') == last_dpc_bullettin_date; 
-    });
-
-    // console.log('ultimo bottettino:', last_dpc_bullettin);
-    // console.log('tutti i bottettini:', dpc_bullettins);
-
-    // Buld total cases for bullettin chart
-    casesDiffusionChart(dpc_bullettins);
-    // Update dashboard
-    updateDashboardUI(last_dpc_bullettin);
-    // Build slider
-    // buildSlider(dpc_bullettins);
-    // Update centroids layer
-    var features = last_dpc_bullettin[0].casi_accertati;
-    var reprojected_features = []
+// Get COVID19 Last Regional Distribution
+axios.get(url+'/distribution/regions/last',{}).then(function(response){
+    // Spatial data
+    var features = response.data.features;
+    var reprojected_features = [];
     features.forEach(function(feature){
         var obj = {"type":"Feature","properties":feature.properties, "geometry":{"type":"Point",coordinates:new transform(feature.geometry.coordinates,'EPSG:4326','EPSG:3857')}}
-        reprojected_features.push(obj)
+        reprojected_features.push(obj);
     })
     var collection = {"type": "FeatureCollection", "features": reprojected_features};
     var featureCollection = new GeoJSON().readFeatures(collection);
     centroidsLayer.getSource().addFeatures(featureCollection);
+    // Regional Distribution Chart
+    regionDistributionChart(features)
+});
+
+// Get COVID19 Summary Data
+axios.get(url+'/summary',{ data: '' }).then(function(response){
+    var totale_contagiati = response.data[0].totale;
+    var data_aggiornamento = response.data[0].aggiornamento;
+    var data_source = "http://www.salute.gov.it/portale/nuovocoronavirus/dettaglioContenutiNuovoCoronavirus.jsp?lingua=italiano&id=5351&area=nuovoCoronavirus&menu=vuoto"
+    // Title
+    document.querySelector('#dashboard-title').innerHTML = '<i class="fas fa-tachometer-alt fa-lg"></i> Coronavirus: '+ totale_contagiati + ' contagiati'
+    // Update
+    document.querySelector('#last-update').innerHTML = '<i class="far fa-calendar-alt"></i> <strong><span style="font-size:18px;">'+ moment(data_aggiornamento).format('DD/MM/YYYY HH:mm') + '</span></strong>'
+    // Info origin
+    document.querySelector('#data-source').innerHTML = '<i class="fas fa-link"></i> <strong><a class="text-warning" target="_blank" href="'+data_source+'">Ministero della Salute</a><strong>'
+    // Trend Chart
+    casesDiffusionChart(response.data);
 });
 
 // Build slider
+/*
 const buildSlider = function(bullettins){
 
     bullettins = bullettins.sort(bullettin_sorter);
@@ -163,32 +161,20 @@ const buildSlider = function(bullettins){
         //console.log(parseInt(values[0]),handle)
         var current_slider_date = moment(parseInt(values[0])).format('DD/MM/YYYY HH:mm:ss')
         console.log(current_slider_date)
-        
     });
-
 }
-
-const updateDashboardUI = function(data){
-    // Dashboard title
-    document.querySelector('#dashboard-title').innerHTML = '<i class="fas fa-tachometer-alt fa-lg"></i> '+ data[0].titolo
-    // Update
-    document.querySelector('#last-update').innerHTML = '<i class="far fa-calendar-alt"></i> <strong><span style="font-size:18px;">'+ moment(data[0].aggiornamento_del).format('DD/MM/YYYY HH:mm') + '</span></strong>'
-    // Info origin
-    document.querySelector('#data-source').innerHTML = '<i class="fas fa-link"></i> <strong><a class="text-warning" target="_blank" href="'+data[0].link+'">Bollettino della Protezione Civile</a><strong>'
-    // Populate chart
-    regionDistributionChart(data[0].casi_accertati);
-};
+*/
 
 let regChart;
 const regionDistributionChart = function(data){
+    data.sort(num_cases_sorter)
     // Dataset
     var dataset = [];
     var labels = [];
     data.forEach(function(element){
-        dataset.push(element.properties.casi);
+        dataset.push(element.properties.numero_casi);
         labels.push(element.properties.regione);
     })
-
     // Grafico
 	var ctx = document.getElementById('region-distribution-chart').getContext('2d');
     if (regChart) {regChart.destroy(); }
@@ -227,17 +213,21 @@ const regionDistributionChart = function(data){
 }
 
 let totChart;
-const casesDiffusionChart = function(bullettins){
-    bullettins = bullettins.sort(bullettin_sorter);
+const casesDiffusionChart = function(data){
+    data.reverse()
     // Dataset
     var total_cases = []
+    var positive = []
+    var dead = []
+    var recovered = []
     var bullettin_dates = []
-    bullettins.forEach(b =>{
-        total_cases.push(parseInt(b.titolo.match(/\d+/g))) // Take total number from bullettin title
-        bullettin_dates.push(moment(b.aggiornamento_del).format('DD/MM/YYYY HH:mm'))
+    data.forEach(d =>{
+        total_cases.push(d.totale) 
+        positive.push(d.positivi)
+        dead.push(d.deceduti)
+        recovered.push(d.guariti)
+        bullettin_dates.push(moment(d.aggiornamento).format('DD/MM/YYYY HH:mm'))
     });
-    // console.log(total_cases)
-    // console.log(bullettin_dates)
     // Grafico
 	var ctx = document.getElementById('total-cases-chart').getContext('2d');
     if (totChart) {totChart.destroy(); }
@@ -247,17 +237,35 @@ const casesDiffusionChart = function(bullettins){
 		data: {
 			labels: bullettin_dates,
 			datasets:[{
-				label: 'Casi accertati',
+				label: 'Contagiati',
 				backgroundColor: '#b71c1c',
 				borderColor: '#CC0000',
 				data: total_cases,
+				fill: false
+			},{
+				label: 'Positivi',
+				backgroundColor: '#FF8800',
+				borderColor: '#e65100',
+				data: positive,
+				fill: false
+			},{
+				label: 'Guariti',
+				backgroundColor: '#00C851',
+				borderColor: '#007E33',
+				data: recovered,
+				fill: false
+			},{
+				label: 'Morti',
+				backgroundColor: '#aa66cc',
+				borderColor: '#9933CC',
+				data: dead,
 				fill: false
 			}]
 		},
 		options: {
             responsive:true,
             legend:{
-                display:false
+                display:true
             },
             scales: {
                 yAxes:[{
@@ -275,12 +283,25 @@ const casesDiffusionChart = function(bullettins){
 	});
 }
 
-// Custo sorting function useful for order DPC bullettis by their emission date
+// Custom sorting function useful for order DPC bullettis by their emission date
+/*
 const bullettin_sorter = function( a, b ) {
     if ( moment(a.aggiornamento_del).format('YYYY-MM-DD HH:mm:ss') < moment(b.aggiornamento_del).format('YYYY-MM-DD HH:mm:ss') ){
       return -1;
     }
     if ( moment(a.aggiornamento_del).format('YYYY-MM-DD HH:mm:ss') > moment(b.aggiornamento_del).format('YYYY-MM-DD HH:mm:ss') ){
+      return 1;
+    }
+    return 0;
+}
+*/
+
+// Ordinamento per numero di casi
+const num_cases_sorter = function( a, b ) {
+    if ( a.properties.numero_casi < b.properties.numero_casi ){
+      return -1;
+    }
+    if ( a.properties.numero_casi > b.properties.numero_casi ){
       return 1;
     }
     return 0;
