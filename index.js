@@ -159,7 +159,6 @@ axios.get(url+'/state',{ data: '' }).then(function(response){
 // Build slider
 /*
 const buildSlider = function(bullettins){
-
     bullettins = bullettins.sort(bullettin_sorter);
 
     var range_obj = {}
