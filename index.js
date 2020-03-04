@@ -282,7 +282,7 @@ const lastStateChartFn = function(data){
             responsive:true,
             title: {
                 display: true,
-                text: 'Situazine dei contagiati',
+                text: 'Situazione dei contagiati',
                 fontColor:'#FFF',
                 fontStyle: 'bold',
                 fontSize: 12
