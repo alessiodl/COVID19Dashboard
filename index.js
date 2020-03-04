@@ -4,7 +4,7 @@ import 'ol/ol.css';
 import Map from 'ol/Map';
 import View from 'ol/View';
 import {fromLonLat, transform} from 'ol/proj';
-import {Tile as TileLayer} from 'ol/layer';
+import {Heatmap as HeatmapLayer, Tile as TileLayer} from 'ol/layer';
 import GeoJSON from 'ol/format/GeoJSON';
 import VectorLayer from 'ol/layer/Vector';
 import VectorImageLayer from 'ol/layer/VectorImage';
@@ -87,14 +87,30 @@ var centroidsLayer = new VectorImageLayer({
         return new Style({
             image: new Circle({
                 radius: radius,
-                fill: new Fill({color: 'rgba(255,0,0,.5)' }),
-	            stroke: new Stroke({color: '#CC0000', width: 2})
+                fill: new Fill({color: 'rgba(220,53,69,.75)' }),
+	            stroke: new Stroke({color: '#dc3545', width: 2})
             })
         })
         
     }
 });
 map.addLayer(centroidsLayer);
+
+/* 
+var heatmap = new HeatmapLayer({
+    source: new VectorSource({
+      format: new GeoJSON()
+    }),
+    blur: 35,
+    radius: 30,
+    weight: function(feature) {
+        var casi = feature.get('numero_casi');
+
+        return (casi*100)/2502;
+    }
+});
+map.addLayer(heatmap);
+*/
 
 // Get COVID19 Last Regional Distribution
 axios.get(url+'/distribution/regions/last',{}).then(function(response){
@@ -107,7 +123,10 @@ axios.get(url+'/distribution/regions/last',{}).then(function(response){
     })
     var collection = {"type": "FeatureCollection", "features": reprojected_features};
     var featureCollection = new GeoJSON().readFeatures(collection);
+    // Populate centroids layer
     centroidsLayer.getSource().addFeatures(featureCollection);
+    // Populate heatmap layer
+    // heatmap.getSource().addFeatures(featureCollection);
     // Regional Distribution Chart
     regionDistributionChart(features)
 });
@@ -125,6 +144,14 @@ axios.get(url+'/summary',{ data: '' }).then(function(response){
     document.querySelector('#data-source').innerHTML = '<i class="fas fa-link"></i> <strong><a class="text-warning" target="_blank" href="'+data_source+'">Ministero della Salute</a><strong>'
     // Trend Chart
     casesDiffusionChart(response.data);
+    // LastState Chart
+    lastStateChartFn(response.data)
+});
+
+// Get COVID19 State Data
+axios.get(url+'/state',{ data: '' }).then(function(response){
+    // LastState Chart
+    setTimeout(function(){lastStateChartFn(response.data[0])},250);
 });
 
 // Build slider
@@ -185,7 +212,7 @@ const regionDistributionChart = function(data){
 			labels: labels,
 			datasets:[{
 				label: 'Casi accertati',
-				backgroundColor: '#b71c1c',
+				backgroundColor: '#dc3545',
 				borderColor: '#CC0000',
 				data: dataset,
 				fill: false
@@ -198,7 +225,7 @@ const regionDistributionChart = function(data){
                 text: 'Contagi per regione',
                 fontColor:'#FFF',
                 fontStyle: 'bold',
-                fontSizs: 18
+                fontSize: 16
             },
             legend:{
                 display:false
@@ -230,6 +257,46 @@ const regionDistributionChart = function(data){
 	});
 }
 
+let lastStateChart;
+const lastStateChartFn = function(data){
+    // console.log(data.aggiornamento)
+    var domiciliare = data.isolamento_domiciliare;
+    var ricoverati  = data.ricoverati_con_sintomi;
+    var tintensiva  = data.terapia_intensiva;
+    // Grafico
+	var ctx = document.getElementById('last-state-chart').getContext('2d');
+    if (lastStateChart) {lastStateChart.destroy(); }
+    lastStateChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels:['Isolamento domiciliare','Ricoverati con sintomi','Terapia intensiva'],
+            datasets:[{
+                data: [domiciliare,ricoverati,tintensiva],
+                backgroundColor: ['#ef9a9a','#dc3545','#b71c1c'],
+                borderColor: ['#ef9a9a','#dc3545','#b71c1c'],
+                label: 'Condizioni'
+            }]
+        },
+        options: {
+            responsive:true,
+            title: {
+                display: true,
+                text: 'Situazine dei contagiati',
+                fontColor:'#FFF',
+                fontStyle: 'bold',
+                fontSize: 16
+            },
+            legend:{
+                display:true,
+                position: 'right',
+                labels:{
+                    fontColor:'#bdbdbd'
+                }
+            }
+        } 
+    })
+}
+
 let totChart;
 const casesDiffusionChart = function(data){
     data.reverse()
@@ -256,26 +323,26 @@ const casesDiffusionChart = function(data){
 			labels: bullettin_dates,
 			datasets:[{
 				label: 'Contagiati',
-				backgroundColor: '#b71c1c',
-				borderColor: '#CC0000',
+				backgroundColor: '#dc3545',
+				borderColor: '#dc3545',
 				data: total_cases,
 				fill: false
 			},{
 				label: 'Positivi',
 				backgroundColor: '#FF8800',
-				borderColor: '#e65100',
+				borderColor: '#FF8800',
 				data: positive,
 				fill: false
 			},{
 				label: 'Guariti',
 				backgroundColor: '#00C851',
-				borderColor: '#007E33',
+				borderColor: '#00C851',
 				data: recovered,
 				fill: false
 			},{
 				label: 'Morti',
 				backgroundColor: '#aa66cc',
-				borderColor: '#9933CC',
+				borderColor: '#aa66cc',
 				data: dead,
 				fill: false
 			}]
@@ -284,14 +351,14 @@ const casesDiffusionChart = function(data){
             responsive:true,
             title: {
                 display: true,
-                text: 'Andamento giorno per giorno',
+                text: 'Evoluzione dal 24 Febbraio 2020 alla data odierna',
                 fontColor:'#FFF',
                 fontStyle: 'bold',
-                fontSizs: 18
+                fontSize: 16
             },
             legend:{
                 display:true,
-                position: 'left',
+                position: 'top',
                 labels:{
                     fontColor:'#bdbdbd'
                 }
