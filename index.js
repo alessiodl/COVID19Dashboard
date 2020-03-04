@@ -71,17 +71,17 @@ var centroidsLayer = new VectorImageLayer({
         } else if (casi >= 71 && casi <= 100){
             radius = 30;
         } else if (casi >= 101 && casi <= 150){
-            radius = 40;
+            radius = 35;
         } else if (casi >= 151 && casi <= 200){
-            radius = 50;
+            radius = 45;
         } else if (casi >= 201 && casi <= 250){
-            radius = 60;
+            radius = 50;
         } else if (casi >= 251 && casi <= 300){
-            radius = 70;
+            radius = 55;
         } else if (casi >= 301 && casi <= 400){
-            radius = 80;
+            radius = 60;
         } else {
-            radius = 100;
+            radius = 70;
         }
 
         return new Style({
@@ -167,7 +167,7 @@ const buildSlider = function(bullettins){
 
 let regChart;
 const regionDistributionChart = function(data){
-    data.sort(num_cases_sorter)
+    data.sort(num_cases_sorter).reverse()
     // Dataset
     var dataset = [];
     var labels = [];
@@ -180,7 +180,7 @@ const regionDistributionChart = function(data){
     if (regChart) {regChart.destroy(); }
     
     regChart = new Chart(ctx, {
-		type: 'horizontalBar',
+		type: 'bar',
 		data: {
 			labels: labels,
 			datasets:[{
@@ -193,6 +193,13 @@ const regionDistributionChart = function(data){
 		},
 		options: {
             responsive:true,
+            title: {
+                display: true,
+                text: 'Contagi per regione',
+                fontColor:'#FFF',
+                fontStyle: 'bold',
+                fontSizs: 18
+            },
             legend:{
                 display:false
             },
@@ -204,7 +211,18 @@ const regionDistributionChart = function(data){
                 }],
                 xAxes:[{
                     ticks:{
-                        fontColor:'#FFF'
+                        fontColor:'#FFF',
+                        callback: function(value, index, values) {
+                            if (value == ' Provincia autonoma di Trento'){
+                                return 'P.A. Trento';
+                            } else if (value == ' Provincia autonoma di Bolzano') {
+                                return 'P.A. Bolzano';
+                            } else if (value == ' Friuli Venezia Giulia') {
+                                return 'Friuli';
+                            } else {
+                                return value;
+                            }
+                        }
                     }
                 }]
             }
@@ -226,7 +244,7 @@ const casesDiffusionChart = function(data){
         positive.push(d.positivi)
         dead.push(d.deceduti)
         recovered.push(d.guariti)
-        bullettin_dates.push(moment(d.aggiornamento).format('DD/MM/YYYY HH:mm'))
+        bullettin_dates.push(moment(d.aggiornamento).format('DD MMM, HH:mm'))
     });
     // Grafico
 	var ctx = document.getElementById('total-cases-chart').getContext('2d');
@@ -264,8 +282,19 @@ const casesDiffusionChart = function(data){
 		},
 		options: {
             responsive:true,
+            title: {
+                display: true,
+                text: 'Andamento giorno per giorno',
+                fontColor:'#FFF',
+                fontStyle: 'bold',
+                fontSizs: 18
+            },
             legend:{
-                display:true
+                display:true,
+                position: 'left',
+                labels:{
+                    fontColor:'#bdbdbd'
+                }
             },
             scales: {
                 yAxes:[{

@@ -16,10 +16,10 @@
     <main>
       <div class="container-fluid"></div>
         <div class="row no-gutters">
-          <div class="col-lg-6">
+          <div class="col-lg-6 col-md-4">
             <div id="map" class="map"></div>
           </div>
-          <div class="col-lg-6 bg-dark">
+          <div class="col-lg-6 col-md-8 bg-dark">
             <div id="bullettin">
               <!-- Bullettin info -->
               <div class="card text-white bg-dark">
@@ -31,13 +31,14 @@
                     <i class="fas fa-link"></i> Aggiorno <i class="fas fa-cog fa-spin"></i>
                   </div>
                   <br/>
-                  <p style="font-size:12px"><i class="fas fa-database"></i> I dati presentati sono pubblicati attraverso un 
-                    <a class="text-warning" href="https://github.com/alessiodl/COVID19Feed2Json" target="_blank">servizio web</a> basato sullo
-                    <a target="_blank" class="text-warning" href="https://it.wikipedia.org/wiki/Web_scraping">scraping</a> 
-                    del <a class="text-warning" href="http://www.protezionecivile.gov.it/" target="_blank">
-                    Sito del Dipartimento della Protezione Civile - Presidenza del Consiglio dei Ministri</a>. 
-                    Si rimanda pertanto alle fonti istituzionali per l'ufficialit&agrave; e la piena correttezza delle informazioni.</p>
-                    <p class="text-info">La sincronizzazione automatica con la sorgente dei dati avviene ogni sera alle 19:30</p>
+                  <p class="alert-light" style="border-radius:4px;padding:10px;font-size:13px"><i class="fas fa-database"></i> I dati sono ottenuti attraverso un 
+                    <a href="https://github.com/alessiodl/COVID19Feed2Json" target="_blank">servizio web</a> basato sullo
+                    <a target="_blank" href="https://it.wikipedia.org/wiki/Web_scraping">scraping</a> 
+                    del <a href="http://www.protezionecivile.gov.it/" target="_blank">
+                    Sito del Dipartimento della Protezione Civile - Presidenza del Consiglio dei Ministri</a>, che pubblica un resoconto ogni giorno alle 18:00. 
+                    Si rimanda pertanto a tale fonte per l'ufficialit&agrave; e la piena correttezza delle informazioni.<br/><br/>
+                    <i class="fas fa-sync-alt"></i> <strong>La sincronizzazione con la sorgente ufficiale dei dati avviene ogni sera alle 19:30</strong>
+                  </p>
                 </div>
               </div>
               <!-- Info slider 
@@ -48,18 +49,19 @@
               </div> -->
               <!-- Evolution chart -->
               <div class="card text-white bg-dark">
-                <div class="card-header"><i class="fas fa-chart-line"></i> Evoluzione nel tempo</div>
+                <!-- div class="card-header"><i class="fas fa-chart-line"></i> Evoluzione nel tempo</div -->
                 <div class="card-body">
                   <canvas id="total-cases-chart" style="width: 100vw; height: 40vh;"></canvas>
                 </div>
               </div>
               <!-- Region chart -->
               <div class="card text-white bg-dark">
-                <div class="card-header"><i class="far fa-chart-bar"></i> Casi per Regione</div>
+                <!-- div class="card-header"><i class="far fa-chart-bar"></i> Casi per Regione</div-->
                 <div class="card-body">
                   <canvas id="region-distribution-chart" style="width: 100vw; height: 60vh;"></canvas>
                 </div>
               </div>
+              
               <!-- Developed by -->
               <div class="float-right text-muted p-2">
                 <i class="fab fa-github"></i> by <a class="text-info" target="_blank" href="https://github.com/alessiodl/COVID19Dashboard">Alessio Di Lorenzo</a>
