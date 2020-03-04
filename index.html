@@ -9,7 +9,7 @@
     <header>
       <nav class="navbar navbar-dark fixed-top bg-danger">
         <a class="navbar-brand" href="#" id="dashboard-title">
-          <i class="fas fa-cog fa-lg fa-spin"></i> <span >Aggiorno...</span>
+          <i class="fas fa-tachometer-alt fa-lg"></i> <span >Coronavirus in Italia</span>
         </a>
       </nav>
     </header>
@@ -25,19 +25,24 @@
               <div class="card text-white bg-dark">
                 <div class="card-body">
                   <div id="last-update">
-                    <i class="far fa-calendar-alt"></i> Aggiorno <i class="fas fa-cog fa-spin"></i>
+                    <i class="far fa-calendar-alt fa-fw"></i> Aggiorno <i class="fas fa-cog fa-spin"></i>
+                  </div>
+                  <div id="last-cases">
+                    <i class="fas fa-tachometer-alt fa-fw"></i> Aggiorno <i class="fas fa-cog fa-spin"></i>
                   </div>
                   <div id="data-source">
-                    <i class="fas fa-link"></i> Aggiorno <i class="fas fa-cog fa-spin"></i>
+                    <i class="fas fa-link fa-fw"></i> Aggiorno <i class="fas fa-cog fa-spin"></i>
                   </div>
                   <br/>
-                  <p class="alert-light" style="border-radius:4px;padding:10px;font-size:13px"><i class="fas fa-database"></i> I dati sono ottenuti attraverso un 
+                  <p class="alert-light" style="border-radius:4px;padding:10px;font-size:12px"><i class="fas fa-database"></i> I dati sono ottenuti attraverso un 
                     <a href="https://github.com/alessiodl/COVID19Feed2Json" target="_blank">servizio web</a> basato sullo
                     <a target="_blank" href="https://it.wikipedia.org/wiki/Web_scraping">scraping</a> 
                     del <a href="http://www.protezionecivile.gov.it/" target="_blank">
                     Sito del Dipartimento della Protezione Civile - Presidenza del Consiglio dei Ministri</a>, che pubblica un resoconto ogni giorno alle 18:00. 
-                    Si rimanda pertanto a tale fonte per l'ufficialit&agrave; e la piena correttezza delle informazioni.<br/><br/>
-                    <i class="fas fa-sync-alt"></i> <strong>La sincronizzazione con la sorgente ufficiale dei dati avviene ogni sera alle 19:30</strong>
+                    Si rimanda pertanto a tale fonte per l'ufficialit&agrave; e la piena correttezza delle informazioni.
+                    <strong>La sincronizzazione con la sorgente ufficiale dei dati avviene ogni sera alle 19:30</strong>.
+                    <br/><br/>
+                    <i class="fab fa-github"></i> by <a class="text-info" target="_blank" href="https://github.com/alessiodl/COVID19Dashboard">Alessio Di Lorenzo</a>
                   </p>
                 </div>
               </div>
@@ -72,10 +77,7 @@
                   </div>
                 </div>
               </div>
-              <!-- Developed by -->
-              <div class="float-right text-muted p-2">
-                <i class="fab fa-github"></i> by <a class="text-info" target="_blank" href="https://github.com/alessiodl/COVID19Dashboard">Alessio Di Lorenzo</a>
-              </div>
+              
             </div>
           </div>
         </div>

@@ -137,11 +137,13 @@ axios.get(url+'/summary',{ data: '' }).then(function(response){
     var data_aggiornamento = response.data[0].aggiornamento;
     var data_source = "http://www.salute.gov.it/portale/nuovocoronavirus/dettaglioContenutiNuovoCoronavirus.jsp?lingua=italiano&id=5351&area=nuovoCoronavirus&menu=vuoto"
     // Title
-    document.querySelector('#dashboard-title').innerHTML = '<i class="fas fa-tachometer-alt fa-lg"></i> Coronavirus: '+ totale_contagiati + ' contagiati'
+    // document.querySelector('#dashboard-title').innerHTML = '<i class="fas fa-tachometer-alt fa-lg"></i> Coronavirus: '+ totale_contagiati + ' contagiati'
     // Update
-    document.querySelector('#last-update').innerHTML = '<i class="far fa-calendar-alt"></i> <strong><span style="font-size:18px;">'+ moment(data_aggiornamento).format('DD/MM/YYYY HH:mm') + '</span></strong>'
+    document.querySelector('#last-update').innerHTML = '<i class="far fa-calendar-alt fa-fw"></i> <strong><span style="font-size:18px;">'+ moment(data_aggiornamento).format('DD/MM/YYYY HH:mm') + '</span></strong>'
+    // Count
+    document.querySelector('#last-cases').innerHTML = '<i class="fas fa-tachometer-alt fa-fw"></i> <span style="font-size:18px;"> <strong>'+ totale_contagiati + '</strong> contagiati'
     // Info origin
-    document.querySelector('#data-source').innerHTML = '<i class="fas fa-link"></i> <strong><a class="text-warning" target="_blank" href="'+data_source+'">Ministero della Salute</a><strong>'
+    document.querySelector('#data-source').innerHTML = '<i class="fas fa-link fa-fw"></i> <strong><a class="text-warning" target="_blank" href="'+data_source+'">Ministero della Salute</a><strong>'
     // Trend Chart
     casesDiffusionChart(response.data);
     // LastState Chart
@@ -222,10 +224,10 @@ const regionDistributionChart = function(data){
             responsive:true,
             title: {
                 display: true,
-                text: 'Contagi per regione',
+                text: 'Distribuzione per Regione',
                 fontColor:'#FFF',
                 fontStyle: 'bold',
-                fontSize: 16
+                fontSize: 12
             },
             legend:{
                 display:false
@@ -269,12 +271,11 @@ const lastStateChartFn = function(data){
     lastStateChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels:['Isolamento domiciliare','Ricoverati con sintomi','Terapia intensiva'],
+            labels:['Isolamento domiciliare','Ricoverati con sintomi','in Terapia intensiva'],
             datasets:[{
                 data: [domiciliare,ricoverati,tintensiva],
                 backgroundColor: ['#ef9a9a','#dc3545','#b71c1c'],
-                borderColor: ['#ef9a9a','#dc3545','#b71c1c'],
-                label: 'Condizioni'
+                borderColor: ['#ef9a9a','#dc3545','#b71c1c']
             }]
         },
         options: {
@@ -284,7 +285,7 @@ const lastStateChartFn = function(data){
                 text: 'Situazine dei contagiati',
                 fontColor:'#FFF',
                 fontStyle: 'bold',
-                fontSize: 16
+                fontSize: 12
             },
             legend:{
                 display:true,

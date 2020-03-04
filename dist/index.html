@@ -1,1 +1,89 @@
-<!DOCTYPE html><head><title>COVID19 Italia</title><script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script><link rel="stylesheet" href="COVID19Dashboard.f7b7ccdd.css"></head><body> <header> <nav class="navbar navbar-dark fixed-top bg-danger"> <a class="navbar-brand" href="#" id="dashboard-title"> <i class="fas fa-cog fa-lg fa-spin"></i> <span>Aggiorno...</span> </a> </nav> </header> <main> <div class="container-fluid"></div> <div class="row no-gutters"> <div class="col-lg-5 col-md-4"> <div id="map" class="map"></div> </div> <div class="col-lg-7 col-md-8 bg-dark"> <div id="bullettin">  <div class="card text-white bg-dark"> <div class="card-body"> <div id="last-update"> <i class="far fa-calendar-alt"></i> Aggiorno <i class="fas fa-cog fa-spin"></i> </div> <div id="data-source"> <i class="fas fa-link"></i> Aggiorno <i class="fas fa-cog fa-spin"></i> </div> <br> <p class="alert-light" style="border-radius:4px;padding:10px;font-size:13px"><i class="fas fa-database"></i> I dati sono ottenuti attraverso un <a href="https://github.com/alessiodl/COVID19Feed2Json" target="_blank">servizio web</a> basato sullo <a target="_blank" href="https://it.wikipedia.org/wiki/Web_scraping">scraping</a> del <a href="http://www.protezionecivile.gov.it/" target="_blank"> Sito del Dipartimento della Protezione Civile - Presidenza del Consiglio dei Ministri</a>, che pubblica un resoconto ogni giorno alle 18:00. Si rimanda pertanto a tale fonte per l'ufficialit&agrave; e la piena correttezza delle informazioni.<br><br> <i class="fas fa-sync-alt"></i> <strong>La sincronizzazione con la sorgente ufficiale dei dati avviene ogni sera alle 19:30</strong> </p> </div> </div>   <div class="card text-white bg-dark">  <div class="card-body"> <div class="row"> <div class="col-md-6"> <canvas id="region-distribution-chart" style="width:80vw;height:90vh;"></canvas> </div> <div class="col-md-6"> <canvas id="last-state-chart" style="width:80vw;height:80vh;"></canvas> </div> </div> </div> </div>  <div class="card text-white bg-dark">  <div class="card-body"> <div class="row"> <div class="col-md-12"> <canvas id="total-cases-chart" style="width:80vw;height:35vh;"></canvas> </div> </div> </div> </div>  <div class="float-right text-muted p-2"> <i class="fab fa-github"></i> by <a class="text-info" target="_blank" href="https://github.com/alessiodl/COVID19Dashboard">Alessio Di Lorenzo</a> </div> </div> </div> </div>  </main> <script src="COVID19Dashboard.a3c97d59.js"></script> </body>
+<!DOCTYPE html>
+  <head>
+    <title>COVID19 Italia</title>
+    <!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
+    
+  <link rel="stylesheet" href="/COVID19Dashboard.e31bb0bc.css"></head>
+  <body>
+    <header>
+      <nav class="navbar navbar-dark fixed-top bg-danger">
+        <a class="navbar-brand" href="#" id="dashboard-title">
+          <i class="fas fa-tachometer-alt fa-lg"></i> <span>Coronavirus in Italia</span>
+        </a>
+      </nav>
+    </header>
+    <main>
+      <div class="container-fluid"></div>
+        <div class="row no-gutters">
+          <div class="col-lg-5 col-md-4">
+            <div id="map" class="map"></div>
+          </div>
+          <div class="col-lg-7 col-md-8 bg-dark">
+            <div id="bullettin">
+              <!-- Bullettin info -->
+              <div class="card text-white bg-dark">
+                <div class="card-body">
+                  <div id="last-update">
+                    <i class="far fa-calendar-alt fa-fw"></i> Aggiorno <i class="fas fa-cog fa-spin"></i>
+                  </div>
+                  <div id="last-cases">
+                    <i class="fas fa-tachometer-alt fa-fw"></i> Aggiorno <i class="fas fa-cog fa-spin"></i>
+                  </div>
+                  <div id="data-source">
+                    <i class="fas fa-link fa-fw"></i> Aggiorno <i class="fas fa-cog fa-spin"></i>
+                  </div>
+                  <br>
+                  <p class="alert-light" style="border-radius:4px;padding:10px;font-size:12px"><i class="fas fa-database"></i> I dati sono ottenuti attraverso un 
+                    <a href="https://github.com/alessiodl/COVID19Feed2Json" target="_blank">servizio web</a> basato sullo
+                    <a target="_blank" href="https://it.wikipedia.org/wiki/Web_scraping">scraping</a> 
+                    del <a href="http://www.protezionecivile.gov.it/" target="_blank">
+                    Sito del Dipartimento della Protezione Civile - Presidenza del Consiglio dei Ministri</a>, che pubblica un resoconto ogni giorno alle 18:00. 
+                    Si rimanda pertanto a tale fonte per l'ufficialit&agrave; e la piena correttezza delle informazioni.
+                    <strong>La sincronizzazione con la sorgente ufficiale dei dati avviene ogni sera alle 19:30</strong>.
+                    <br><br>
+                    <i class="fab fa-github"></i> by <a class="text-info" target="_blank" href="https://github.com/alessiodl/COVID19Dashboard">Alessio Di Lorenzo</a>
+                  </p>
+                </div>
+              </div>
+              <!-- Info slider 
+              <div class="card text-white bg-dark">
+                <div class="card-body">
+                  <div id="slider"></div>
+                </div>
+              </div> -->
+              <!-- Evolution chart -->
+              <div class="card text-white bg-dark">
+                <!-- div class="card-header"><i class="fas fa-chart-line"></i> Evoluzione nel tempo</div -->
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <canvas id="region-distribution-chart" style="width: 80vw; height: 90vh;"></canvas>
+                    </div>
+                    <div class="col-md-6">
+                      <canvas id="last-state-chart" style="width: 80vw; height: 80vh;"></canvas>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Region chart -->
+              <div class="card text-white bg-dark">
+                <!-- div class="card-header"><i class="far fa-chart-bar"></i> Casi per Regione</div-->
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <canvas id="total-cases-chart" style="width: 80vw; height: 35vh;"></canvas>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+      
+    </main>
+    
+    <script src="/COVID19Dashboard.e31bb0bc.js"></script>
+  </body>
+
