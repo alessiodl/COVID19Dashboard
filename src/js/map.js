@@ -106,7 +106,7 @@ axios.get(url+'/distribution/regions/last',{}).then(function(response){
     // Update centroids layer
     centroidsLayer.getSource().addFeatures(featureCollection);
     // Update date badge
-    document.querySelector("#data-at").innerHTML = moment(features[0].properties.aggiornamento).format('DD MMM YYYY, HH:mm')
+    // document.querySelector("#data-at").innerHTML = moment(features[0].properties.aggiornamento).format('DD MMM YYYY, HH:mm')
     // Update region number badge
     // document.querySelector("#reg-number").innerHTML = features.length
     // Regional Distribution Chart
@@ -116,9 +116,12 @@ axios.get(url+'/distribution/regions/last',{}).then(function(response){
 // Get COVID19 Summary Data
 axios.get(url+'/summary',{ data: '' }).then(function(response){
     var totale_contagiati = response.data[0].totale;
+    var aggiornamento = response.data[0].aggiornamento;
     // var data_source = "http://www.salute.gov.it/portale/nuovocoronavirus/dettaglioContenutiNuovoCoronavirus.jsp?lingua=italiano&id=5351&area=nuovoCoronavirus&menu=vuoto"
     // Update total count
     document.querySelector("#tot-contagi").innerHTML = totale_contagiati
+    // Update date
+    document.querySelector("#data-at").innerHTML = moment(aggiornamento).format('DD MMM YYYY, HH:mm')
     // Last Outcomes Chart
     lastOutcomesChartFn(response.data[0])
     // Trend Chart
