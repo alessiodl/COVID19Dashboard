@@ -1,0 +1,24 @@
+/** MY CSS VARIABLES 
+    **********************
+*/
+@import './partials/variables';
+
+/** BOOTSTRAP SASS MODULES 
+    **********************
+*/
+
+// Overrides
+$theme-colors: (
+  "primary": $app-base-color,
+  "secondary": #5F497F,
+  "tertiary": #BEA6A1,
+  "custom": #2F4858
+);
+// Vendor
+@import "../../node_modules/bootstrap/scss/bootstrap";
+
+/** MY BASE CSS 
+    **********************
+*/
+@import './partials/base';
+@import './partials/_map';

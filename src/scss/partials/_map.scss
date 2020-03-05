@@ -1,0 +1,29 @@
+#map {
+    width: 100%;
+    height: 100vh;
+}
+
+.ol-control {
+    border-radius: 1px !important;
+    padding: 0px !important;
+}
+
+.ol-control button {
+    font-size: 1.24em !important;
+    height: 1.575em !important;
+    width: 1.575em !important;
+    background-color:rgb(183,28,28) !important;
+    opacity:0.85 !important;
+}
+
+.ol-control-button, .ol-zoom-in, .ol-zoom-out {
+    background-color:rgb(183,28,28) !important;
+    opacity:0.85 !important;
+}
+  
+.ol-zoom-in:hover{
+    opacity:0.75 !important;
+}
+.ol-zoom-out:hover{
+    opacity:0.75 !important;
+}
