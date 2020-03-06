@@ -1,29 +1,32 @@
 import 'ol/ol.css';
 import Map from 'ol/Map';
 import View from 'ol/View';
+import {defaults as defaultControls, FullScreen} from 'ol/control';
 import {fromLonLat, transform} from 'ol/proj';
-import {Heatmap as HeatmapLayer, Tile as TileLayer} from 'ol/layer';
+import {Tile as TileLayer} from 'ol/layer';
 import GeoJSON from 'ol/format/GeoJSON';
 import VectorLayer from 'ol/layer/Vector';
 import VectorImageLayer from 'ol/layer/VectorImage';
 import VectorSource from 'ol/source/Vector';
 import {Fill, Stroke, Style, Text, Image, Circle} from 'ol/style';
 import XYZ from 'ol/source/XYZ';
+import Overlay from 'ol/Overlay';
 
 import axios from 'axios';
-import lodash from 'lodash';
 import moment from 'moment';
 
 import { lastStateChartFn, lastOutcomesChartFn } from './chart-stato'
 import { regionDistributionChart } from './chart-regioni'
 import { casesDiffusionChart } from './chart-cases'
 
-
 const url = "https://covid19-it-api.herokuapp.com";
 
 // Map
 var map = new Map({
     target: 'map',
+    controls: defaultControls().extend([
+        new FullScreen({tipLabel:'Mappa a schermo intero'})
+      ]),
     layers: [
         new TileLayer({
             source: new XYZ({
@@ -38,6 +41,13 @@ var map = new Map({
       zoom: 6
     })
 });
+
+// Popup overlay
+// Popup showing the position the user clicked
+var popup = new Overlay({
+    element: document.getElementById('popup')
+});
+map.addOverlay(popup);
 
 // Regions centroids
 var centroidsLayer = new VectorImageLayer({
@@ -91,6 +101,34 @@ var centroidsLayer = new VectorImageLayer({
 });
 
 map.addLayer(centroidsLayer);
+centroidsLayer.set("name","Centroidi Regioni");
+
+// Mouse move
+// ************************************************************
+map.on('pointermove', function(e) {
+	if (e.dragging) return;
+    var pixel = e.map.getEventPixel(e.originalEvent);
+    var hit = e.map.forEachFeatureAtPixel(pixel, function (feature, layer) {
+    	if (layer){
+
+            var coordinate = e.coordinate;
+            popup.setPosition(coordinate);
+            document.getElementById('popup-content').innerHTML = "<h5 class='text-danger'>"+feature.getProperties().regione+"</h5>"
+                                                                + "Tamponi: "+feature.getProperties().tamponi
+                                                                + "<br/>Totale casi: "+feature.getProperties().numero_casi
+                                                                + "<br/>Positivi: "+feature.getProperties().totale_positivi
+
+            return layer.get('name') === 'Centroidi Regioni'/* || layer.get('name') === 'Comuni'*/;
+        }
+    });
+    if (hit){
+        e.map.getTargetElement().style.cursor = 'pointer';
+    } else {
+        popup.setPosition(undefined);
+        e.map.getTargetElement().style.cursor = '';
+    }
+    // e.map.getTargetElement().style.cursor = hit ? 'pointer' : '';
+});
 
 // Get COVID19 Summary Data
 // ************************************************************
