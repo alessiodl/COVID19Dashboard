@@ -1,4 +1,5 @@
 import 'chart.js';
+import 'chartjs-plugin-zoom';
 import moment from 'moment';
 
 let totCasesChart;
@@ -27,26 +28,26 @@ const casesDiffusionChart = function(data){
 			labels: bullettin_dates,
 			datasets:[{
 				label: 'Contagiati',
-				backgroundColor: '#dc3545',
-				borderColor: '#dc3545',
+				backgroundColor: '#ff4444',
+				borderColor: '#ff4444',
 				data: total_cases,
 				fill: false
 			},{
 				label: 'Positivi',
-				backgroundColor: '#FF8800',
-				borderColor: '#FF8800',
+				backgroundColor: '#CC0000',
+				borderColor: '#CC0000',
 				data: positive,
 				fill: false
 			},{
 				label: 'Guariti',
-				backgroundColor: '#00C851',
-				borderColor: '#00C851',
+				backgroundColor: '#e1f5fe',
+				borderColor: '#e1f5fe',
 				data: recovered,
 				fill: false
 			},{
-				label: 'Morti',
-				backgroundColor: '#aa66cc',
-				borderColor: '#aa66cc',
+				label: 'Deceduti',
+				backgroundColor: '#5F497F',
+				borderColor: '#5F497F',
 				data: dead,
 				fill: false
 			}]
@@ -72,6 +73,19 @@ const casesDiffusionChart = function(data){
                         fontColor:'#FFF'
                     }
                 }]
+            },
+            plugins:{
+                zoom:{
+                    pan:{
+                        enabled:false,
+                        mode:'xy'
+                    },
+                    zoom: {
+                        enabled: true,
+                        mode: 'x',
+                        speed: 0.05
+                    }
+                }
             }
 		}
 	});

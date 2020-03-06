@@ -9,6 +9,7 @@
     "axios": "^0.19.2",
     "bootstrap": "^4.4.1",
     "chart.js": "^2.9.3",
+    "chartjs-plugin-zoom": "^0.7.5",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "nouislider": "^14.1.1",

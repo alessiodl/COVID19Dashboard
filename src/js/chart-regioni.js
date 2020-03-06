@@ -1,13 +1,16 @@
 import 'chart.js';
+import 'chartjs-plugin-zoom';
 
 let regChart;
 const regionDistributionChart = function(data){
     data.sort(num_cases_sorter).reverse()
     // Dataset
-    var dataset = [];
+    var tot_casi = [];
+    var tot_positivi = [];
     var labels = [];
     data.forEach(function(element){
-        dataset.push(element.properties.numero_casi);
+        tot_casi.push(element.properties.numero_casi);
+        tot_positivi.push(element.properties.totale_positivi);
         labels.push(element.properties.regione);
     })
     // Grafico
@@ -19,10 +22,16 @@ const regionDistributionChart = function(data){
 		data: {
 			labels: labels,
 			datasets:[{
-				label: 'Casi accertati',
-				backgroundColor: '#dc3545',
+				label: 'Totale casi',
+				backgroundColor: '#ff4444',
+				borderColor: '#ff4444',
+				data: tot_casi,
+				fill: false
+			},{
+				label: 'Positivi',
+				backgroundColor: '#CC0000',
 				borderColor: '#CC0000',
-				data: dataset,
+				data: tot_positivi,
 				fill: false
 			}]
 		},
@@ -37,7 +46,11 @@ const regionDistributionChart = function(data){
                 fontSize: 12
             },
             legend:{
-                display:false
+                display:true,
+                position: 'top',
+                labels:{
+                    fontColor:'#bdbdbd'
+                }
             },
             scales: {
                 yAxes:[{
@@ -47,20 +60,22 @@ const regionDistributionChart = function(data){
                 }],
                 xAxes:[{
                     ticks:{
-                        fontColor:'#FFF',
-                        callback: function(value, index, values) {
-                            if (value == ' Provincia autonoma di Trento'){
-                                return 'P.A. Trento';
-                            } else if (value == ' Provincia autonoma di Bolzano') {
-                                return 'P.A. Bolzano';
-                            } else if (value == ' Friuli Venezia Giulia') {
-                                return 'Friuli';
-                            } else {
-                                return value;
-                            }
-                        }
+                        fontColor:'#FFF'
                     }
                 }]
+            },
+            plugins:{
+                zoom:{
+                    pan:{
+                        enabled:false,
+                        mode:'xy'
+                    },
+                    zoom: {
+                        enabled: true,
+                        mode: 'x',
+                        speed: 0.05
+                    }
+                }
             }
 		}
 	});

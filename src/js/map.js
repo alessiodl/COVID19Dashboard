@@ -92,32 +92,11 @@ var centroidsLayer = new VectorImageLayer({
 
 map.addLayer(centroidsLayer);
 
-// Get COVID19 Last Distribution Data
-axios.get(url+'/distribution/regions/last',{}).then(function(response){
-    // Spatial data
-    var features = response.data.features;
-    var reprojected_features = [];
-    features.forEach(function(feature){
-        var obj = {"type":"Feature","properties":feature.properties, "geometry":{"type":"Point",coordinates:new transform(feature.geometry.coordinates,'EPSG:4326','EPSG:3857')}}
-        reprojected_features.push(obj);
-    })
-    var collection = {"type": "FeatureCollection", "features": reprojected_features};
-    var featureCollection = new GeoJSON().readFeatures(collection);
-    // Update centroids layer
-    centroidsLayer.getSource().addFeatures(featureCollection);
-    // Update date badge
-    // document.querySelector("#data-at").innerHTML = moment(features[0].properties.aggiornamento).format('DD MMM YYYY, HH:mm')
-    // Update region number badge
-    // document.querySelector("#reg-number").innerHTML = features.length
-    // Regional Distribution Chart
-    regionDistributionChart(features)
-});
-
 // Get COVID19 Summary Data
-axios.get(url+'/summary',{ data: '' }).then(function(response){
+// ************************************************************
+axios.get(url+'/summary',{ params:{} }).then(function(response){
     var totale_contagiati = response.data[0].totale;
     var aggiornamento = response.data[0].aggiornamento;
-    // var data_source = "http://www.salute.gov.it/portale/nuovocoronavirus/dettaglioContenutiNuovoCoronavirus.jsp?lingua=italiano&id=5351&area=nuovoCoronavirus&menu=vuoto"
     // Update total count
     document.querySelector("#tot-contagi").innerHTML = totale_contagiati
     // Update date
@@ -126,10 +105,53 @@ axios.get(url+'/summary',{ data: '' }).then(function(response){
     lastOutcomesChartFn(response.data[0])
     // Trend Chart
     casesDiffusionChart(response.data);
+    // Populate region distribution layer and chart
+    regionDistribution(aggiornamento);
 });
 
 // Get COVID19 State Data
-axios.get(url+'/state',{ data: '' }).then(function(response){
+// ************************************************************
+axios.get(url+'/state',{ params:{} }).then(function(response){
     // LastState Chart
     setTimeout(function(){lastStateChartFn(response.data[0])},250);
 });
+
+// Get COVID19 Last Distribution Data
+// ************************************************************
+const regionDistribution = function(aggiornamento){
+    axios.get(url+'/distribution/regions/overview',{
+        params:{
+            data: moment(aggiornamento).format('YYYY-MM-DD')
+        }
+    }).then(function(response){
+        // Spatial data
+        var features = response.data.features;
+        var reprojected_features = [];
+        features.forEach(function(feature){
+            var obj;
+            // Correzione temporanea da eliminare dopo aver modificato il geocoder sulle API
+            if (feature.properties.regione == 'Emilia Romagna') {
+                obj = {"type":"Feature","properties":feature.properties, "geometry":{"type":"Point",coordinates:new transform([11.039213647000054,44.52591084900007],'EPSG:4326','EPSG:3857')}}
+            // Correzione temporanea da eliminare dopo aver modificato il geocoder sulle API
+            } else if (feature.properties.regione == 'Friuli V.G.') {
+                obj = {"type":"Feature","properties":feature.properties, "geometry":{"type":"Point",coordinates:new transform([12.5594548,46.1129993],'EPSG:4326','EPSG:3857')}}
+            // Correzione temporanea da eliminare dopo aver modificato il geocoder sulle API
+            } else if (feature.properties.regione == 'Trento') {
+                obj = {"type":"Feature","properties":feature.properties, "geometry":{"type":"Point",coordinates:new transform([10.6469911,46.1015475],'EPSG:4326','EPSG:3857')}}
+            // Correzione temporanea da eliminare dopo aver modificato il geocoder sulle API
+            } else if (feature.properties.regione == 'Bolzano') {
+            // Correzione temporanea da eliminare dopo aver modificato il geocoder sulle API
+                obj = {"type":"Feature","properties":feature.properties, "geometry":{"type":"Point",coordinates:new transform([11.37359619140625,46.538082005463075],'EPSG:4326','EPSG:3857')}}
+            } else {
+                obj = {"type":"Feature","properties":feature.properties, "geometry":{"type":"Point",coordinates:new transform(feature.geometry.coordinates,'EPSG:4326','EPSG:3857')}}
+            }
+            reprojected_features.push(obj);
+        })
+        var collection = {"type": "FeatureCollection", "features": reprojected_features};
+        var featureCollection = new GeoJSON().readFeatures(collection);
+        // Update centroids layer
+        centroidsLayer.getSource().addFeatures(featureCollection);
+        // Regional Distribution Chart
+        regionDistributionChart(features)
+    });
+}
