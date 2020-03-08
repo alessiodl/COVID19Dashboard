@@ -90223,7 +90223,7 @@ _axios.default.get(url + '/state', {
 var regionDistribution = function regionDistribution(aggiornamento) {
   _axios.default.get(url + '/distribution/regions/overview', {
     params: {
-      data: (0, _moment.default)(aggiornamento).format('YYYY-MM-DD')
+      data: (0, _moment.default)(aggiornamento).format('YYYY-MM-DD HH:mm:ss')
     }
   }).then(function (response) {
     // Spatial data
@@ -90329,7 +90329,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57156" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49597" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

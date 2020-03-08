@@ -159,7 +159,7 @@ axios.get(url+'/state',{ params:{} }).then(function(response){
 const regionDistribution = function(aggiornamento){
     axios.get(url+'/distribution/regions/overview',{
         params:{
-            data: moment(aggiornamento).format('YYYY-MM-DD')
+            data: moment(aggiornamento).format('YYYY-MM-DD HH:mm:ss')
         }
     }).then(function(response){
         // Spatial data
