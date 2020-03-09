@@ -12,10 +12,10 @@ const casesDiffusionChart = function(data){
     var recovered = []
     var bullettin_dates = []
     data.forEach(d =>{
-        total_cases.push(d.totale) 
-        positive.push(d.positivi)
+        total_cases.push(d.totale_casi) 
+        positive.push(d.totale_attualmente_positivi)
         dead.push(d.deceduti)
-        recovered.push(d.guariti)
+        recovered.push(d.dimessi_guariti)
         bullettin_dates.push(moment(d.aggiornamento).format('DD MMM, HH:mm'))
     });
     // Grafico

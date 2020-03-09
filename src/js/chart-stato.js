@@ -33,12 +33,11 @@ const lastStateChartFn = function(data){
     })
 }
 
-
 let lastOutcomesChart;
 const lastOutcomesChartFn = function(data){
-    var positivi = data.positivi;
+    var positivi = data.totale_attualmente_positivi;
     var deceduti = data.deceduti;
-    var guariti  = data.guariti;
+    var guariti  = data.dimessi_guariti;
     // Grafico
 	var ctx = document.getElementById('last-outcome-chart').getContext('2d');
     if (lastOutcomesChart) {lastOutcomesChart.destroy(); }

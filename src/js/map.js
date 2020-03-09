@@ -110,14 +110,12 @@ map.on('pointermove', function(e) {
     var pixel = e.map.getEventPixel(e.originalEvent);
     var hit = e.map.forEachFeatureAtPixel(pixel, function (feature, layer) {
     	if (layer){
-
             var coordinate = e.coordinate;
             popup.setPosition(coordinate);
             document.getElementById('popup-content').innerHTML = "<h5 class='text-danger'>"+feature.getProperties().regione+"</h5>"
                                                                 + "Tamponi: "+feature.getProperties().tamponi
                                                                 + "<br/>Totale casi: "+feature.getProperties().numero_casi
                                                                 + "<br/>Positivi: "+feature.getProperties().totale_positivi
-
             return layer.get('name') === 'Centroidi Regioni'/* || layer.get('name') === 'Comuni'*/;
         }
     });
@@ -132,32 +130,27 @@ map.on('pointermove', function(e) {
 
 // Get COVID19 Summary Data
 // ************************************************************
-axios.get(url+'/summary',{ params:{} }).then(function(response){
-    var totale_contagiati = response.data[0].totale;
-    var aggiornamento = response.data[0].aggiornamento;
+axios.get(url+'/andamento',{ params:{} }).then(function(response){
+    var totale_casi = response.data[0].totale_casi;
+    var aggiornamento = response.data[0].data;
     // Update total count
-    document.querySelector("#tot-contagi").innerHTML = totale_contagiati
+    document.querySelector("#tot-contagi").innerHTML = totale_casi
     // Update date
     document.querySelector("#data-at").innerHTML = moment(aggiornamento).format('DD MMM YYYY, HH:mm')
+    // LastState Chart
+    lastStateChartFn(response.data[0])
     // Last Outcomes Chart
     lastOutcomesChartFn(response.data[0])
-    // Trend Chart
-    casesDiffusionChart(response.data);
     // Populate region distribution layer and chart
     regionDistribution(aggiornamento);
-});
-
-// Get COVID19 State Data
-// ************************************************************
-axios.get(url+'/state',{ params:{} }).then(function(response){
-    // LastState Chart
-    setTimeout(function(){lastStateChartFn(response.data[0])},250);
+    // Trend Chart
+    casesDiffusionChart(response.data);
 });
 
 // Get COVID19 Last Distribution Data
 // ************************************************************
 const regionDistribution = function(aggiornamento){
-    axios.get(url+'/distribution/regions/overview',{
+    axios.get(url+'/regioni',{
         params:{
             data: moment(aggiornamento).format('YYYY-MM-DD HH:mm:ss')
         }
@@ -166,23 +159,7 @@ const regionDistribution = function(aggiornamento){
         var features = response.data.features;
         var reprojected_features = [];
         features.forEach(function(feature){
-            var obj;
-            // Correzione temporanea da eliminare dopo aver modificato il geocoder sulle API
-            if (feature.properties.regione == 'Emilia Romagna') {
-                obj = {"type":"Feature","properties":feature.properties, "geometry":{"type":"Point",coordinates:new transform([11.039213647000054,44.52591084900007],'EPSG:4326','EPSG:3857')}}
-            // Correzione temporanea da eliminare dopo aver modificato il geocoder sulle API
-            } else if (feature.properties.regione == 'Friuli V.G.') {
-                obj = {"type":"Feature","properties":feature.properties, "geometry":{"type":"Point",coordinates:new transform([12.5594548,46.1129993],'EPSG:4326','EPSG:3857')}}
-            // Correzione temporanea da eliminare dopo aver modificato il geocoder sulle API
-            } else if (feature.properties.regione == 'Trento') {
-                obj = {"type":"Feature","properties":feature.properties, "geometry":{"type":"Point",coordinates:new transform([10.6469911,46.1015475],'EPSG:4326','EPSG:3857')}}
-            // Correzione temporanea da eliminare dopo aver modificato il geocoder sulle API
-            } else if (feature.properties.regione == 'Bolzano') {
-            // Correzione temporanea da eliminare dopo aver modificato il geocoder sulle API
-                obj = {"type":"Feature","properties":feature.properties, "geometry":{"type":"Point",coordinates:new transform([11.37359619140625,46.538082005463075],'EPSG:4326','EPSG:3857')}}
-            } else {
-                obj = {"type":"Feature","properties":feature.properties, "geometry":{"type":"Point",coordinates:new transform(feature.geometry.coordinates,'EPSG:4326','EPSG:3857')}}
-            }
+            var obj = {"type":"Feature","properties":feature.properties, "geometry":{"type":"Point",coordinates:new transform(feature.geometry.coordinates,'EPSG:4326','EPSG:3857')}}
             reprojected_features.push(obj);
         })
         var collection = {"type": "FeatureCollection", "features": reprojected_features};
