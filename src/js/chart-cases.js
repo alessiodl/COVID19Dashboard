@@ -16,7 +16,7 @@ const casesDiffusionChart = function(data){
         positive.push(d.totale_attualmente_positivi)
         dead.push(d.deceduti)
         recovered.push(d.dimessi_guariti)
-        bullettin_dates.push(moment(d.aggiornamento).format('DD MMM, HH:mm'))
+        bullettin_dates.push(moment(d.data).format('DD MMM'))
     });
     // Grafico
 	var ctx = document.getElementById('total-cases-chart').getContext('2d');

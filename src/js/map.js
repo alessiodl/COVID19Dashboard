@@ -59,31 +59,33 @@ var centroidsLayer = new VectorImageLayer({
         var radius;
         if(casi >= 1 && casi <= 5){
             radius = 4;
-        } else if(casi >= 6 && casi <= 15) {
+        } else if(casi >= 6 && casi <= 20) {
+            radius = 8;
+        } else if (casi >= 21 && casi <= 40) {
             radius = 10;
-        } else if (casi >= 16 && casi <= 30) {
+        } else if (casi >= 41 && casi <= 60) {
+            radius = 12;
+        } else if (casi >= 61 && casi <= 80){
             radius = 15;
-        } else if (casi >= 31 && casi <= 50) {
-            radius = 18;
-        } else if (casi >= 51 && casi <= 70){
-            radius = 22;
-        } else if (casi >= 71 && casi <= 100){
-            radius = 25;
+        } else if (casi >= 81 && casi <= 100){
+            radius = 20;
         } else if (casi >= 101 && casi <= 150){
-            radius = 30;
+            radius = 25;
         } else if (casi >= 151 && casi <= 200){
-            radius = 35;
+            radius = 30;
         } else if (casi >= 201 && casi <= 250){
+            radius = 35;
+        } else if (casi >= 251 && casi <= 400){
             radius = 40;
-        } else if (casi >= 251 && casi <= 300){
+        } else if (casi >= 401 && casi <= 600){
             radius = 45;
-        } else if (casi >= 301 && casi <= 400){
+        } else if (casi >= 601 && casi <= 800){
             radius = 50;
-        } else if (casi >= 401 && casi <= 500){
+        } else if (casi >= 801 && casi <= 1000){
             radius = 55;
-        } else if (casi >= 501 && casi <= 600){
+        } else if (casi >= 1001 && casi <= 1500){
             radius = 60;
-        } else if (casi >= 601 && casi <= 700){
+        } else if (casi >= 1501 && casi <= 3000){
             radius = 65;
         } else {
             radius = 70;
