@@ -33,7 +33,7 @@ const casesDiffusionChart = function(data){
 				data: total_cases,
 				fill: false
 			},{
-				label: 'Positivi',
+				label: 'Attualmente positivi',
 				backgroundColor: '#CC0000',
 				borderColor: '#CC0000',
 				data: positive,
