@@ -22,13 +22,13 @@ const regionDistributionChart = function(data){
 		data: {
 			labels: labels,
 			datasets:[{
-				label: 'Totale casi',
+				label: 'Contagiati',
 				backgroundColor: '#ff4444',
 				borderColor: '#ff4444',
 				data: tot_casi,
 				fill: false
 			},{
-				label: 'Positivi',
+				label: 'Attualmente positivi',
 				backgroundColor: '#CC0000',
 				borderColor: '#CC0000',
 				data: tot_positivi,

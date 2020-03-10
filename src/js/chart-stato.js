@@ -21,7 +21,7 @@ const lastStateChartFn = function(data){
         },
         options: {
             responsive:true,
-            aspectRatio: 3,
+            aspectRatio: 3.5,
             legend:{
                 display:true,
                 position: 'right',
@@ -53,7 +53,7 @@ const lastOutcomesChartFn = function(data){
         },
         options: {
             responsive:true,
-            aspectRatio: 3,
+            aspectRatio: 3.5,
             legend:{
                 display:true,
                 position: 'right',

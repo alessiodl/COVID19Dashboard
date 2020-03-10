@@ -6,7 +6,7 @@
     <title>COVID19 Dashboard Italia</title>
 </head>
 <body>
-    <div class="container-fluid d-float">
+    <div class="container-fluid">
         <!-- Navbar -->
         <nav class="navbar fixed-top navbar-expand-md navbar-dark bg-danger custom-shadow">
             <div class="navbar-brand">
@@ -68,17 +68,44 @@
 
         <!-- Mappa e grafici -->
         <div class="row mt-3">
-            <div class="col-12 col-lg-6">
-                <div class="card bg-primary bg-ligth text-white mb-3 custom-shadow">
-                    <div class="card-body  p-0">
-                        <div id="map"></div>
-                        <div id="popup" class="ol-popup">
-                            <div id="popup-content"></div>
+            <div class="col-12 col-lg-6 vh-100">
+                <div class="card bg-primary bg-ligth text-white mb-3">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card-body p-0 d-stretch custom-shadow">
+                                <div id="map"></div>
+                                <div id="popup" class="ol-popup">
+                                    <div id="popup-content"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-lg-6">
+            <div class="col-12 col-lg-6 vh-100">
+                <!-- Slider 
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card bg-primary bg-dark text-white mb-3 custom-shadow">
+                            <div class="card-header">
+                                <i class="far fa-calendar-alt"></i> Filtro temporale
+                            </div>
+                            <div class="card-body">
+                                <div class="card-text">
+                                    <div class="row">
+                                        <div class="col-10">
+                                            <div id="slider"></div>
+                                        </div>
+                                        <div class="col-2 text-center">
+                                            <div id="slider_current_value"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>  -->
+                <!-- Pie Charts -->
                 <div class="row">
                     <div class="col-12 col-sm-6">
                         <div class="card bg-primary bg-dark text-white mb-3 custom-shadow">
@@ -105,7 +132,7 @@
                         </div>
                     </div>
                 </div>
-
+                <!-- Bar Chart -->
                 <div class="row">
                     <div class="col-12">
                         <div class="card bg-primary bg-dark text-white mb-3 custom-shadow">
@@ -120,7 +147,7 @@
                         </div>
                     </div>
                 </div>
-
+                <!-- Line Chart -->
                 <div class="row">
                     <div class="col-12">
                         <div class="card bg-primary bg-dark text-white mb-3 custom-shadow">
@@ -136,16 +163,6 @@
                 
             </div>
         </div>
-
-        <!-- Slider
-        <div class="row">
-            <div class="col-12">
-                <p class="alert alert-custom">Slider</p>
-            </div>
-        </div>  -->
-
-        
-
     </div>
     <script src="./src/index.js"></script>
 </body>

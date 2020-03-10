@@ -5,7 +5,6 @@ import {defaults as defaultControls, FullScreen} from 'ol/control';
 import {fromLonLat, transform} from 'ol/proj';
 import {Tile as TileLayer} from 'ol/layer';
 import GeoJSON from 'ol/format/GeoJSON';
-import VectorLayer from 'ol/layer/Vector';
 import VectorImageLayer from 'ol/layer/VectorImage';
 import VectorSource from 'ol/source/Vector';
 import {Fill, Stroke, Style, Text, Image, Circle} from 'ol/style';
@@ -18,6 +17,7 @@ import moment from 'moment';
 import { lastStateChartFn, lastOutcomesChartFn } from './chart-stato'
 import { regionDistributionChart } from './chart-regioni'
 import { casesDiffusionChart } from './chart-cases'
+// import { createSlider } from './slider'
 
 const url = "https://covid19-it-api.herokuapp.com";
 
@@ -57,7 +57,9 @@ var centroidsLayer = new VectorImageLayer({
     style: function(feature) {
         const casi = parseInt(feature.get('numero_casi'));
         var radius;
-        if(casi >= 1 && casi <= 5){
+        if (casi == 0) {
+            radius = 0
+        } else if(casi >= 1 && casi <= 5){
             radius = 4;
         } else if(casi >= 6 && casi <= 20) {
             radius = 8;
@@ -147,6 +149,8 @@ axios.get(url+'/andamento',{ params:{} }).then(function(response){
     regionDistribution(aggiornamento);
     // Trend Chart
     casesDiffusionChart(response.data);
+    // Slider - decommentare una volta che saranno stati sistemati i dati dal DPC
+    // createSlider(response.data)
 });
 
 // Get COVID19 Last Distribution Data
@@ -157,6 +161,7 @@ const regionDistribution = function(aggiornamento){
             data: moment(aggiornamento).format('YYYY-MM-DD HH:mm:ss')
         }
     }).then(function(response){
+        centroidsLayer.getSource().clear()
         // Spatial data
         var features = response.data.features;
         var reprojected_features = [];
@@ -172,3 +177,5 @@ const regionDistribution = function(aggiornamento){
         regionDistributionChart(features)
     });
 }
+
+export { regionDistribution }

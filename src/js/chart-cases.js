@@ -54,7 +54,7 @@ const casesDiffusionChart = function(data){
 		},
 		options: {
             responsive:true,
-            aspectRatio: 4,
+            aspectRatio: 3.8,
             legend:{
                 display:true,
                 position: 'top',

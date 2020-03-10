@@ -6,6 +6,7 @@
 /** BOOTSTRAP SASS MODULES 
     **********************
 */
+.card-header { padding:0.3rem 1.25rem !important; }
 
 // Overrides
 $theme-colors: (
@@ -22,3 +23,5 @@ $theme-colors: (
 */
 @import './partials/base';
 @import './partials/_map';
+@import './partials/slider';
+
