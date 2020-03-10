@@ -11,7 +11,9 @@ const regionDistributionChart = function(data){
     data.forEach(function(element){
         tot_casi.push(element.properties.numero_casi);
         tot_positivi.push(element.properties.totale_positivi);
-        labels.push(element.properties.regione);
+        if (element.properties.numero_casi > 0){
+            labels.push(element.properties.regione);
+        }
     })
     // Grafico
 	var ctx = document.getElementById('region-distribution-chart').getContext('2d');

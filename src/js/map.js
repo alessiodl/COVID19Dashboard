@@ -17,7 +17,7 @@ import moment from 'moment';
 import { lastStateChartFn, lastOutcomesChartFn } from './chart-stato'
 import { regionDistributionChart } from './chart-regioni'
 import { casesDiffusionChart } from './chart-cases'
-// import { createSlider } from './slider'
+import { createSlider } from './slider'
 
 const url = "https://covid19-it-api.herokuapp.com";
 
@@ -150,7 +150,7 @@ axios.get(url+'/andamento',{ params:{} }).then(function(response){
     // Trend Chart
     casesDiffusionChart(response.data);
     // Slider - decommentare una volta che saranno stati sistemati i dati dal DPC
-    // createSlider(response.data)
+    createSlider(response.data)
 });
 
 // Get COVID19 Last Distribution Data
