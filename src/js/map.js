@@ -158,7 +158,7 @@ axios.get(url+'/andamento',{ params:{} }).then(function(response){
 const regionDistribution = function(aggiornamento){
     axios.get(url+'/regioni',{
         params:{
-            data: moment(aggiornamento).format('YYYY-MM-DD HH:mm:ss')
+            data: aggiornamento
         }
     }).then(function(response){
         centroidsLayer.getSource().clear()

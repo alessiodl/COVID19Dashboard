@@ -49,11 +49,12 @@ const createSlider = function(_data_){
 
     slider.noUiSlider.on('slide', function (values, handle){
 
-        var slider_datetime = moment(parseInt(values[handle])).format('YYYY-MM-DD')+ ' 18:00:00';
         var url =  "https://covid19-it-api.herokuapp.com";
 
-        axios.get(url+'/andamento',{ params:{ data: slider_datetime } }).then(function(response){
-            console.log(response.data[0])
+        var slider_date = moment(parseInt(values[handle])).format('YYYY-MM-DD');
+
+        axios.get(url+'/andamento',{ params:{ data: slider_date } }).then(function(response){
+            // console.log(response.data[0])
             var totale_casi = response.data[0].totale_casi;
             var aggiornamento = response.data[0].data;
             // Update total count
@@ -65,15 +66,7 @@ const createSlider = function(_data_){
             // Last Outcomes Chart
             lastOutcomesChartFn(response.data[0])
             // Populate region distribution layer and chart
-            var agg = ''
-            if ( aggiornamento == '2020-02-29 18:00:00' || aggiornamento == '2020-03-01 18:00:00'  
-                || aggiornamento == '2020-03-04 18:00:00' || aggiornamento == '2020-03-05 18:00:00' || aggiornamento == '2020-03-06 18:00:00') {
-                agg = aggiornamento.replace('18:','17:');
-            } else {
-                agg = aggiornamento;
-            }
-            console.log(agg)
-            regionDistribution(agg);
+            regionDistribution(slider_date);
             // Trend Chart
             // casesDiffusionChart(response.data);
         });
