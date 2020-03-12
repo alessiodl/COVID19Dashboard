@@ -14,6 +14,8 @@ import Overlay from 'ol/Overlay';
 import axios from 'axios';
 import moment from 'moment';
 
+import chroma from 'chroma-js';
+
 import { lastStateChartFn, lastOutcomesChartFn } from './chart-stato'
 import { regionDistributionChart } from './chart-regioni'
 import { casesDiffusionChart } from './chart-cases'
@@ -104,8 +106,18 @@ var centroidsLayer = new VectorImageLayer({
     }
 });
 
-map.addLayer(centroidsLayer);
-centroidsLayer.set("name","Centroidi Regioni");
+// map.addLayer(centroidsLayer);
+// centroidsLayer.set("name","Centroidi Regioni");
+
+// Region polygons
+var regionsLayer = new VectorImageLayer({
+    source: new VectorSource({
+        format: new GeoJSON()
+    })
+});
+map.addLayer(regionsLayer)
+regionsLayer.set("name","Regioni");
+regionsLayer.setOpacity(0.85)
 
 // Mouse move
 // ************************************************************
@@ -116,11 +128,11 @@ map.on('pointermove', function(e) {
     	if (layer){
             var coordinate = e.coordinate;
             popup.setPosition(coordinate);
-            document.getElementById('popup-content').innerHTML = "<h5 class='text-danger'>"+feature.getProperties().regione+"</h5>"
+            document.getElementById('popup-content').innerHTML = "<h5 class='text-danger'>"+feature.getProperties().denominazione_regione+"</h5>"
                                                                 + "Tamponi: "+feature.getProperties().tamponi
-                                                                + "<br/>Totale casi: "+feature.getProperties().numero_casi
-                                                                + "<br/>Positivi: "+feature.getProperties().totale_positivi
-            return layer.get('name') === 'Centroidi Regioni'/* || layer.get('name') === 'Comuni'*/;
+                                                                + "<br/>Totale casi: "+feature.getProperties().totale_casi
+                                                                + "<br/>Positivi: "+feature.getProperties().totale_attualmente_positivi
+            return layer.get('name') === 'Centroidi Regioni' || layer.get('name') === 'Regioni';
         }
     });
     if (hit){
@@ -156,13 +168,14 @@ axios.get(url+'/andamento',{ params:{} }).then(function(response){
 // Get COVID19 Last Distribution Data
 // ************************************************************
 const regionDistribution = function(aggiornamento){
-    axios.get(url+'/regioni',{
+    axios.get(url+'/regioni/map',{
         params:{
             data: aggiornamento
         }
     }).then(function(response){
         centroidsLayer.getSource().clear()
         // Spatial data
+        /*
         var features = response.data.features;
         var reprojected_features = [];
         features.forEach(function(feature){
@@ -173,9 +186,63 @@ const regionDistribution = function(aggiornamento){
         var featureCollection = new GeoJSON().readFeatures(collection);
         // Update centroids layer
         centroidsLayer.getSource().addFeatures(featureCollection);
+        */
+       regionsLayer.getSource().clear()
+        // Spatial data
+        var features = response.data.features;
+        var collection = {"type": "FeatureCollection", "features": features};
+        var featureCollection = new GeoJSON({featureProjection:'EPSG:3857'}).readFeatures(collection);
+        // Update regions layer
+        regionsLayer.getSource().addFeatures(featureCollection);
+        // Update regions layer style
+        var scale = chroma.scale(['#ffffe0', '#fff2c7', '#ffe5b1', '#ffd79d', '#ffc88e', 
+                    '#ffba81', '#ffaa76', '#ff9a6e', '#fc8968', '#f77b63', 
+                    '#f16b5f', '#e95d5a', '#e24f55', '#d8414e', '#cd3346', 
+                    '#c3263d', '#b61932', '#a90c25', '#9a0316', '#8b0000'
+                    ]).domain([0,30,100,200,300,400,500,600,1000,5000,10000]);               
+        regionsLayer.getSource().forEachFeature(function (feature) {
+            var randomColor = scale(feature.get('totale_casi')).hex(); 
+            var randomStyle = new Style({
+                stroke: new Stroke({ color: "#FFF", width: 1 }),
+                fill: new Fill({ color: randomColor })
+            }); // define a style variable
+            feature.setStyle(randomStyle); // set feature Style
+        });
         // Regional Distribution Chart
         regionDistributionChart(features)
     });
 }
+
+    /*
+    axios.get(url+'/regioni/map',{
+        params:{
+            data: '2020-03-11'
+        }
+    }).then(function(response){
+        regionsLayer.getSource().clear()
+        // Spatial data
+        var features = response.data.features;
+        var collection = {"type": "FeatureCollection", "features": features};
+        var featureCollection = new GeoJSON({featureProjection:'EPSG:3857'}).readFeatures(collection);
+        // Update regions layer
+        regionsLayer.getSource().addFeatures(featureCollection);
+        // Update regions layer style
+        var scale = chroma.scale(['#ffffe0', '#fff2c7', '#ffe5b1', '#ffd79d', '#ffc88e', 
+                    '#ffba81', '#ffaa76', '#ff9a6e', '#fc8968', '#f77b63', 
+                    '#f16b5f', '#e95d5a', '#e24f55', '#d8414e', '#cd3346', 
+                    '#c3263d', '#b61932', '#a90c25', '#9a0316', '#8b0000'
+                    ]).domain([0,30,100,200,300,400,500,600,1000,5000,10000]);               
+        regionsLayer.getSource().forEachFeature(function (feature) {
+            var randomColor = scale(feature.get('totale_casi')).hex(); 
+            var randomStyle = new Style({
+                stroke: new Stroke({ color: "#FFF", width: 1 }),
+                fill: new Fill({ color: randomColor })
+            }); // define a style variable
+            feature.setStyle(randomStyle); // set feature Style
+        });
+        // Regional Distribution Chart
+        // regionDistributionChart(features)
+    });*/
+
 
 export { regionDistribution }

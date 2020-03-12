@@ -9,10 +9,10 @@ const regionDistributionChart = function(data){
     var tot_positivi = [];
     var labels = [];
     data.forEach(function(element){
-        tot_casi.push(element.properties.numero_casi);
-        tot_positivi.push(element.properties.totale_positivi);
-        if (element.properties.numero_casi > 0){
-            labels.push(element.properties.regione);
+        tot_casi.push(element.properties.totale_casi);
+        tot_positivi.push(element.properties.totale_attualmente_positivi);
+        if (element.properties.totale_casi > 0){
+            labels.push(element.properties.denominazione_regione);
         }
     })
     // Grafico
@@ -85,10 +85,10 @@ const regionDistributionChart = function(data){
 
 // Ordinamento per numero di casi
 const num_cases_sorter = function( a, b ) {
-    if ( a.properties.numero_casi < b.properties.numero_casi ){
+    if ( a.properties.totale_casi < b.properties.totale_casi ){
       return -1;
     }
-    if ( a.properties.numero_casi > b.properties.numero_casi ){
+    if ( a.properties.totale_casi > b.properties.totale_casi ){
       return 1;
     }
     return 0;
