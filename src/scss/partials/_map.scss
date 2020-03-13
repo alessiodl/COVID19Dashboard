@@ -32,12 +32,12 @@
 
 .ol-popup {
     position: absolute;
-    background-color: rgba(0,0,0,0.5);
+    background-color: rgba(0,0,0,0.65);
     box-shadow: 0 1px 4px rgba(0,0,0,0.2);
-    padding: 10px;
-    border-radius: 2px;
+    padding: 8px;
+    border-radius: 3px;
     // border: 2px solid #830606;
-    border: 2px solid rgb(95, 88, 88);
+    border: 2px solid rgb(0, 0, 0);
     bottom: 12px;
     left: -50px;
     min-width: 220px;
@@ -58,7 +58,7 @@
     margin-left: -10px;
 }
 .ol-popup:before {
-    border-top-color: #cccccc;
+    border-top-color: #000;
     border-width: 11px;
     left: 48px;
     margin-left: -11px;

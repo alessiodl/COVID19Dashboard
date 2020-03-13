@@ -39,7 +39,7 @@ const regionDistributionChart = function(data){
 		},
 		options: {
             responsive:true,
-            aspectRatio: 3,
+            aspectRatio: 2.2,
             title: {
                 display: false,
                 text: 'Distribuzione per Regione',
@@ -69,8 +69,8 @@ const regionDistributionChart = function(data){
             plugins:{
                 zoom:{
                     pan:{
-                        enabled:false,
-                        mode:'xy'
+                        enabled:true,
+                        mode:'x'
                     },
                     zoom: {
                         enabled: true,

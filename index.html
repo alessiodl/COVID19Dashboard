@@ -27,38 +27,48 @@
         <!-- Close Navbar -->
         <!-- Badges -->
         <div class="row">
-            <div class="col-12 col-md-3 mt-1">
+            <div class="col-6 col-lg-3 mt-1 pr-1">
                 <div class="card bg-secondary text-white h-100 mb-3 custom-shadow">
-                    <div class="card-body p-3 m-auto d-flex align-items-center">
-                        <h3 class="text-center">
-                            <i class="fas fa-tachometer-alt fa-lg"></i><br/>
-                            <span id="tot-contagi"></span> Contagiati
-                        </h3>
+                    <div class="card-header">
+                        <i class="fas fa-tachometer-alt"></i> Contagiati
+                    </div>
+                    <div class="card-body m-auto d-flex align-items-center">
+                        <h2 class="text-center">
+                            <span id="tot-contagi"></span>
+                        </h2>
                     </div>
                 </div>
             </div>
 
-            <div class="col-12 col-md-3 mt-1">
+            <div class="col-6 col-lg-3 mt-1 pl-1">
                 <div class="card bg-secondary text-white h-100 mb-3 custom-shadow">
-                    <div class="card-body p-3 m-auto d-flex align-items-center">
-                        <h3 class="text-center">
-                            <i class="far fa-calendar-alt fa-lg"></i><br/>
+                    <div class="card-header">
+                        <i class="far fa-calendar-alt"></i> Aggiornamento
+                    </div>
+                    <div class="card-body m-auto d-flex align-items-center">
+                        <h2 class="text-center">
                             <span id="data-at"></span>
-                        </h3>
+                        </h2>
                     </div>
                 </div>
             </div>
-
-            <div class="col-12 col-md-6 mt-1">
+            <!-- Slider -->
+            <div class="col-12 col-lg-6 mt-1">
                 <div class="card bg-secondary text-white h-100 mb-3 custom-shadow">
-                    <div class="card-body p-3 text-justify" style="font-size: 13px;">
-                        <i class="fas fa-database"></i> I dati visibili in questa applicazione sono ottenuti attraverso un 
-                        <a href="https://github.com/alessiodl/COVID19Feed2Json" target="_blank" class="text-warning">servizio web</a> basato sulla
-                        lettura in tempo reale delle informazioni messe a disposizione dal <a href="http://www.protezionecivile.gov.it/" class="text-warning" target="_blank">
-                        Sito del Dipartimento della Protezione Civile - Presidenza del Consiglio dei Ministri</a>. Ogni giorno, alle 18:00, viene pubblicato e condiviso su
-                        un <a href="https://github.com/pcm-dpc/COVID-19" target="_blank" class="text-warning">repository dedicato</a> il resoconto aggiornato della situazione nazionale.
-                        <br/><br/>
-                        <i class="fab fa-github"></i> by <a class="text-info" target="_blank" href="https://github.com/alessiodl/COVID19Dashboard">Alessio Di Lorenzo</a>
+                    <div class="card-header">
+                        <i class="fas fa-history"></i> Storico
+                    </div>
+                    <div class="card-body">
+                        <div class="card-text">
+                            <div class="row">
+                                <div class="col-6 col-md-10">
+                                    <div id="slider"></div>
+                                </div>
+                                <div class="col-6 col-md-2 text-center">
+                                    <div id="slider_current_value"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -69,7 +79,7 @@
         <!-- Mappa e grafici -->
         <div class="row mt-3">
             <div class="col-12 col-lg-6">
-                <div class="card bg-dark bg-ligth text-white mt-1 mb-3 custom-shadow">    
+                <div class="card bg-dark bg-ligth text-white mb-3 custom-shadow">    
                     <div class="col-12 p-0">
                         <div class="card-body p-0">
                             <div id="map"></div>
@@ -78,34 +88,18 @@
                             </div>
                         </div>
                         <div class="card-footer text-muted p-4">
-                            I punti sulla mappa sono posizionati sui capoluoghi regionali
+                            <i class="fas fa-database"></i> I dati visibili in questa applicazione sono ottenuti attraverso un 
+                        <a href="https://github.com/alessiodl/COVID19Feed2Json" target="_blank" class="text-warning">servizio web</a> basato sulla
+                        lettura in tempo reale delle informazioni messe a disposizione dal <a href="http://www.protezionecivile.gov.it/" class="text-warning" target="_blank">
+                        Sito del Dipartimento della Protezione Civile - Presidenza del Consiglio dei Ministri</a>. Ogni giorno, alle 18:00, viene pubblicato e condiviso su
+                        un <a href="https://github.com/pcm-dpc/COVID-19" target="_blank" class="text-warning">repository dedicato</a> il resoconto aggiornato della situazione nazionale.
+                        <br/><br/>
+                        <i class="fab fa-github"></i> by <a class="text-info" target="_blank" href="https://github.com/alessiodl/COVID19Dashboard">Alessio Di Lorenzo</a>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-12 col-lg-6">
-                <!-- Slider -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card bg-primary bg-dark text-white mt-1 mb-3 custom-shadow">
-                            <div class="card-header">
-                                <i class="fas fa-history"></i> Storico
-                            </div>
-                            <div class="card-body">
-                                <div class="card-text">
-                                    <div class="row">
-                                        <div class="col-6 col-md-10">
-                                            <div id="slider"></div>
-                                        </div>
-                                        <div class="col-6 col-md-2 text-center">
-                                            <div id="slider_current_value"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> 
                 <!-- Pie Charts -->
                 <div class="row">
                     <div class="col-12 col-sm-6">

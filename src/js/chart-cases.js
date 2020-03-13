@@ -54,7 +54,7 @@ const casesDiffusionChart = function(data){
 		},
 		options: {
             responsive:true,
-            aspectRatio: 3.8,
+            aspectRatio: 2.42,
             legend:{
                 display:true,
                 position: 'top',
@@ -77,8 +77,8 @@ const casesDiffusionChart = function(data){
             plugins:{
                 zoom:{
                     pan:{
-                        enabled:false,
-                        mode:'xy'
+                        enabled:true,
+                        mode:'x'
                     },
                     zoom: {
                         enabled: true,

@@ -52,62 +52,51 @@ var popup = new Overlay({
 map.addOverlay(popup);
 
 // Regions centroids
-var centroidsLayer = new VectorImageLayer({
+var provincesLayer = new VectorImageLayer({
     source: new VectorSource({
         format: new GeoJSON()
     }),
     style: function(feature) {
         const casi = parseInt(feature.get('numero_casi'));
         var radius;
+        var fill = new Fill({color: 'rgba(13,71,161,.95)' });
+        var stroke = new Stroke({color: '#FFF', width: 1});
         if (casi == 0) {
-            radius = 0
-        } else if(casi >= 1 && casi <= 5){
-            radius = 4;
-        } else if(casi >= 6 && casi <= 20) {
-            radius = 8;
-        } else if (casi >= 21 && casi <= 40) {
-            radius = 10;
-        } else if (casi >= 41 && casi <= 60) {
-            radius = 12;
-        } else if (casi >= 61 && casi <= 80){
-            radius = 15;
-        } else if (casi >= 81 && casi <= 100){
-            radius = 20;
-        } else if (casi >= 101 && casi <= 150){
-            radius = 25;
-        } else if (casi >= 151 && casi <= 200){
-            radius = 30;
-        } else if (casi >= 201 && casi <= 250){
-            radius = 35;
-        } else if (casi >= 251 && casi <= 400){
-            radius = 40;
-        } else if (casi >= 401 && casi <= 600){
-            radius = 45;
-        } else if (casi >= 601 && casi <= 800){
-            radius = 50;
-        } else if (casi >= 801 && casi <= 1000){
-            radius = 55;
-        } else if (casi >= 1001 && casi <= 1500){
-            radius = 60;
-        } else if (casi >= 1501 && casi <= 3000){
-            radius = 65;
+            radius = null;
+            fill = null;
+            stroke = null;
+        } else if (casi <= 10){
+            radius = 4
+        } else if (casi <= 50){
+            radius = 6
+        } else if (casi >= 51 && casi <=100){
+            radius = 8
+        } else if (casi >= 101 && casi <=250){
+            radius = 10
+        } else if (casi >= 251 && casi <= 500){
+            radius = 12
+        } else if (casi >= 501 && casi <= 1000) {
+            radius = 15
+        } else if (casi >= 1001 && casi <= 2000) {
+            radius = 18
         } else {
-            radius = 70;
+            radius = 20
         }
-
+        
         return new Style({
             image: new Circle({
                 radius: radius,
-                fill: new Fill({color: 'rgba(220,53,69,.75)' }),
-	            stroke: new Stroke({color: '#dc3545', width: 2})
+                fill: fill,
+	            stroke: stroke
             })
         })
         
     }
 });
 
-// map.addLayer(centroidsLayer);
-// centroidsLayer.set("name","Centroidi Regioni");
+map.addLayer(provincesLayer);
+provincesLayer.set("name","Centroidi Province");
+provincesLayer.setZIndex(11)
 
 // Region polygons
 var regionsLayer = new VectorImageLayer({
@@ -118,6 +107,7 @@ var regionsLayer = new VectorImageLayer({
 map.addLayer(regionsLayer)
 regionsLayer.set("name","Regioni");
 regionsLayer.setOpacity(0.85)
+regionsLayer.setZIndex(10)
 
 // Mouse move
 // ************************************************************
@@ -128,11 +118,16 @@ map.on('pointermove', function(e) {
     	if (layer){
             var coordinate = e.coordinate;
             popup.setPosition(coordinate);
-            document.getElementById('popup-content').innerHTML = "<h5 class='text-danger'>"+feature.getProperties().denominazione_regione+"</h5>"
-                                                                + "Tamponi: "+feature.getProperties().tamponi
-                                                                + "<br/>Totale casi: "+feature.getProperties().totale_casi
-                                                                + "<br/>Positivi: "+feature.getProperties().totale_attualmente_positivi
-            return layer.get('name') === 'Centroidi Regioni' || layer.get('name') === 'Regioni';
+            var popupContent = document.getElementById('popup-content');
+            if (layer.get('name')=='Regioni'){
+                popupContent.innerHTML = "<h5 class='text-danger'>"+feature.getProperties().denominazione_regione+"</h5>"
+                                            + "Tamponi: "+feature.getProperties().tamponi
+                                            + "<br/>Totale casi: "+feature.getProperties().totale_casi
+                                            + "<br/>Positivi: "+feature.getProperties().totale_attualmente_positivi
+            } else if (layer.get('name')=='Centroidi Province'){
+                popupContent.innerHTML = "<h5 class='text-white'>"+feature.getProperties().provincia+": "+feature.getProperties().numero_casi+" casi</h5>"
+            }
+            return layer.get('name') === 'Centroidi Province' || layer.get('name') === 'Regioni';
         }
     });
     if (hit){
@@ -141,7 +136,6 @@ map.on('pointermove', function(e) {
         popup.setPosition(undefined);
         e.map.getTargetElement().style.cursor = '';
     }
-    // e.map.getTargetElement().style.cursor = hit ? 'pointer' : '';
 });
 
 // Get COVID19 Summary Data
@@ -159,6 +153,8 @@ axios.get(url+'/andamento',{ params:{} }).then(function(response){
     lastOutcomesChartFn(response.data[0])
     // Populate region distribution layer and chart
     regionDistribution(aggiornamento);
+    // Populate region distribution layer
+    provincesDistribution(aggiornamento)
     // Trend Chart
     casesDiffusionChart(response.data);
     // Slider - decommentare una volta che saranno stati sistemati i dati dal DPC
@@ -173,21 +169,7 @@ const regionDistribution = function(aggiornamento){
             data: aggiornamento
         }
     }).then(function(response){
-        centroidsLayer.getSource().clear()
-        // Spatial data
-        /*
-        var features = response.data.features;
-        var reprojected_features = [];
-        features.forEach(function(feature){
-            var obj = {"type":"Feature","properties":feature.properties, "geometry":{"type":"Point",coordinates:new transform(feature.geometry.coordinates,'EPSG:4326','EPSG:3857')}}
-            reprojected_features.push(obj);
-        })
-        var collection = {"type": "FeatureCollection", "features": reprojected_features};
-        var featureCollection = new GeoJSON().readFeatures(collection);
-        // Update centroids layer
-        centroidsLayer.getSource().addFeatures(featureCollection);
-        */
-       regionsLayer.getSource().clear()
+        regionsLayer.getSource().clear()
         // Spatial data
         var features = response.data.features;
         var collection = {"type": "FeatureCollection", "features": features};
@@ -213,36 +195,20 @@ const regionDistribution = function(aggiornamento){
     });
 }
 
-    /*
-    axios.get(url+'/regioni/map',{
+const provincesDistribution = function(aggiornamento){
+    axios.get(url+'/province',{
         params:{
-            data: '2020-03-11'
+            data: aggiornamento
         }
     }).then(function(response){
-        regionsLayer.getSource().clear()
+        provincesLayer.getSource().clear()
         // Spatial data
         var features = response.data.features;
         var collection = {"type": "FeatureCollection", "features": features};
         var featureCollection = new GeoJSON({featureProjection:'EPSG:3857'}).readFeatures(collection);
-        // Update regions layer
-        regionsLayer.getSource().addFeatures(featureCollection);
-        // Update regions layer style
-        var scale = chroma.scale(['#ffffe0', '#fff2c7', '#ffe5b1', '#ffd79d', '#ffc88e', 
-                    '#ffba81', '#ffaa76', '#ff9a6e', '#fc8968', '#f77b63', 
-                    '#f16b5f', '#e95d5a', '#e24f55', '#d8414e', '#cd3346', 
-                    '#c3263d', '#b61932', '#a90c25', '#9a0316', '#8b0000'
-                    ]).domain([0,30,100,200,300,400,500,600,1000,5000,10000]);               
-        regionsLayer.getSource().forEachFeature(function (feature) {
-            var randomColor = scale(feature.get('totale_casi')).hex(); 
-            var randomStyle = new Style({
-                stroke: new Stroke({ color: "#FFF", width: 1 }),
-                fill: new Fill({ color: randomColor })
-            }); // define a style variable
-            feature.setStyle(randomStyle); // set feature Style
-        });
-        // Regional Distribution Chart
-        // regionDistributionChart(features)
-    });*/
+        // Update centroids layer
+        provincesLayer.getSource().addFeatures(featureCollection);
+    })
+}
 
-
-export { regionDistribution }
+export { regionDistribution, provincesDistribution }
