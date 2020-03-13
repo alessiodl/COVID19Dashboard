@@ -95933,6 +95933,8 @@ var _chartCases = require("./chart-cases");
 
 var _slider = require("./slider");
 
+var _centerconstraint = require("ol/centerconstraint");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var url = "https://covid19-it-api.herokuapp.com"; // Map
@@ -95945,7 +95947,7 @@ var map = new _Map.default({
   layers: [new _layer.Tile({
     source: new _XYZ.default({
       attributions: 'CoViD-19 Data Source &copy; <a href="http://www.protezionecivile.gov.it/" target="_blank">' + 'Sito del Dipartimento della Protezione Civile - Presidenza del Consiglio dei Ministri</a>',
-      url: 'http://{a-c}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'
+      url: 'http://{a-c}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png'
     })
   })],
   view: new _View.default({
@@ -95958,9 +95960,9 @@ var map = new _Map.default({
 var popup = new _Overlay.default({
   element: document.getElementById('popup')
 });
-map.addOverlay(popup); // Regions centroids
+map.addOverlay(popup); // Provinces centroids
 
-var provincesLayer = new _VectorImage.default({
+var provincesCentrLayer = new _VectorImage.default({
   source: new _Vector.default({
     format: new _GeoJSON.default()
   }),
@@ -96006,19 +96008,33 @@ var provincesLayer = new _VectorImage.default({
     });
   }
 });
-map.addLayer(provincesLayer);
-provincesLayer.set("name", "Centroidi Province");
-provincesLayer.setZIndex(11); // Region polygons
+map.addLayer(provincesCentrLayer);
+provincesCentrLayer.set("name", "Centroidi Province");
+provincesCentrLayer.setZIndex(12); // Provinces polygons
 
-var regionsLayer = new _VectorImage.default({
+var provincesLayer = new _VectorImage.default({
   source: new _Vector.default({
     format: new _GeoJSON.default()
   })
 });
+map.addLayer(provincesLayer);
+provincesLayer.set("name", "Province");
+provincesLayer.setZIndex(10); // Region polygons
+
+var regionsLayer = new _VectorImage.default({
+  source: new _Vector.default({
+    format: new _GeoJSON.default()
+  }),
+  style: new _style.Style({
+    stroke: new _style.Stroke({
+      color: "#37474F",
+      width: 2
+    })
+  })
+});
 map.addLayer(regionsLayer);
 regionsLayer.set("name", "Regioni");
-regionsLayer.setOpacity(0.85);
-regionsLayer.setZIndex(10); // Mouse move
+regionsLayer.setZIndex(11); // Mouse move
 // ************************************************************
 
 map.on('pointermove', function (e) {
@@ -96070,7 +96086,7 @@ _axios.default.get(url + '/andamento', {
   (0, _chartCases.casesDiffusionChart)(response.data); // Slider - decommentare una volta che saranno stati sistemati i dati dal DPC
 
   (0, _slider.createSlider)(response.data);
-}); // Get COVID19 Last Distribution Data
+}); // Get COVID19 Last Region Distribution Data
 // ************************************************************
 
 
@@ -96091,24 +96107,7 @@ var regionDistribution = function regionDistribution(aggiornamento) {
       featureProjection: 'EPSG:3857'
     }).readFeatures(collection); // Update regions layer
 
-    regionsLayer.getSource().addFeatures(featureCollection); // Update regions layer style
-
-    var scale = _chromaJs.default.scale(['#ffffe0', '#fff2c7', '#ffe5b1', '#ffd79d', '#ffc88e', '#ffba81', '#ffaa76', '#ff9a6e', '#fc8968', '#f77b63', '#f16b5f', '#e95d5a', '#e24f55', '#d8414e', '#cd3346', '#c3263d', '#b61932', '#a90c25', '#9a0316', '#8b0000']).domain([0, 30, 100, 200, 300, 400, 500, 600, 1000, 5000, 10000]);
-
-    regionsLayer.getSource().forEachFeature(function (feature) {
-      var randomColor = scale(feature.get('totale_casi')).hex();
-      var randomStyle = new _style.Style({
-        stroke: new _style.Stroke({
-          color: "#FFF",
-          width: 1
-        }),
-        fill: new _style.Fill({
-          color: randomColor
-        })
-      }); // define a style variable
-
-      feature.setStyle(randomStyle); // set feature Style
-    }); // Regional Distribution Chart
+    regionsLayer.getSource().addFeatures(featureCollection); // Regional Distribution Chart
 
     (0, _chartRegioni.regionDistributionChart)(features);
   });
@@ -96117,12 +96116,55 @@ var regionDistribution = function regionDistribution(aggiornamento) {
 exports.regionDistribution = regionDistribution;
 
 var provincesDistribution = function provincesDistribution(aggiornamento) {
-  _axios.default.get(url + '/province', {
+  // Polygons
+  _axios.default.get(url + '/province/map', {
     params: {
       data: aggiornamento
     }
   }).then(function (response) {
     provincesLayer.getSource().clear(); // Spatial data
+
+    var features = response.data.features; // Calculate color scale domain
+
+    var color_scale_domain = [];
+    features.forEach(function (e) {
+      color_scale_domain.push(e.properties.totale_casi);
+    });
+    var collection = {
+      "type": "FeatureCollection",
+      "features": features
+    };
+    var featureCollection = new _GeoJSON.default({
+      featureProjection: 'EPSG:3857'
+    }).readFeatures(collection); // Update provinces layer
+
+    provincesLayer.getSource().addFeatures(featureCollection); // Update provinces layer style
+
+    var scale = _chromaJs.default.scale(['#ffffe0', '#fff2c7', '#ffe5b1', '#ffd79d', '#ffc88e', '#ffba81', '#ffaa76', '#ff9a6e', '#fc8968', '#f77b63', '#f16b5f', '#e95d5a', '#e24f55', '#d8414e', '#cd3346', '#c3263d', '#b61932', '#a90c25', '#9a0316', '#8b0000']).domain([0, Math.max.apply(Math, color_scale_domain)]);
+
+    provincesLayer.getSource().forEachFeature(function (feature) {
+      var randomColor = scale(feature.get('totale_casi')).hex();
+      var randomStyle = new _style.Style({
+        stroke: new _style.Stroke({
+          color: "#37474F",
+          width: 1
+        }),
+        fill: new _style.Fill({
+          color: randomColor
+        })
+      });
+      feature.setStyle(randomStyle); // set feature Style
+    }); // Province Distribution Chart - To Do
+    // regionDistributionChart(features)
+  }); // Centroids
+
+
+  _axios.default.get(url + '/province', {
+    params: {
+      data: aggiornamento
+    }
+  }).then(function (response) {
+    provincesCentrLayer.getSource().clear(); // Spatial data
 
     var features = response.data.features;
     var collection = {
@@ -96133,12 +96175,12 @@ var provincesDistribution = function provincesDistribution(aggiornamento) {
       featureProjection: 'EPSG:3857'
     }).readFeatures(collection); // Update centroids layer
 
-    provincesLayer.getSource().addFeatures(featureCollection);
+    provincesCentrLayer.getSource().addFeatures(featureCollection);
   });
 };
 
 exports.provincesDistribution = provincesDistribution;
-},{"ol/ol.css":"node_modules/ol/ol.css","ol/Map":"node_modules/ol/Map.js","ol/View":"node_modules/ol/View.js","ol/control":"node_modules/ol/control.js","ol/proj":"node_modules/ol/proj.js","ol/layer":"node_modules/ol/layer.js","ol/format/GeoJSON":"node_modules/ol/format/GeoJSON.js","ol/layer/VectorImage":"node_modules/ol/layer/VectorImage.js","ol/source/Vector":"node_modules/ol/source/Vector.js","ol/style":"node_modules/ol/style.js","ol/source/XYZ":"node_modules/ol/source/XYZ.js","ol/Overlay":"node_modules/ol/Overlay.js","axios":"node_modules/axios/index.js","moment":"node_modules/moment/moment.js","chroma-js":"node_modules/chroma-js/chroma.js","./chart-stato":"src/js/chart-stato.js","./chart-regioni":"src/js/chart-regioni.js","./chart-cases":"src/js/chart-cases.js","./slider":"src/js/slider.js"}],"src/index.js":[function(require,module,exports) {
+},{"ol/ol.css":"node_modules/ol/ol.css","ol/Map":"node_modules/ol/Map.js","ol/View":"node_modules/ol/View.js","ol/control":"node_modules/ol/control.js","ol/proj":"node_modules/ol/proj.js","ol/layer":"node_modules/ol/layer.js","ol/format/GeoJSON":"node_modules/ol/format/GeoJSON.js","ol/layer/VectorImage":"node_modules/ol/layer/VectorImage.js","ol/source/Vector":"node_modules/ol/source/Vector.js","ol/style":"node_modules/ol/style.js","ol/source/XYZ":"node_modules/ol/source/XYZ.js","ol/Overlay":"node_modules/ol/Overlay.js","axios":"node_modules/axios/index.js","moment":"node_modules/moment/moment.js","chroma-js":"node_modules/chroma-js/chroma.js","./chart-stato":"src/js/chart-stato.js","./chart-regioni":"src/js/chart-regioni.js","./chart-cases":"src/js/chart-cases.js","./slider":"src/js/slider.js","ol/centerconstraint":"node_modules/ol/centerconstraint.js"}],"src/index.js":[function(require,module,exports) {
 "use strict";
 
 require("./scss/main.scss");
@@ -96174,7 +96216,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49334" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56509" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
