@@ -44,11 +44,11 @@ const lastOutcomesChartFn = function(data){
     lastOutcomesChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels:['Positivi','Deceduti','Guariti'],
+            labels:[/*'Positivi',*/'Deceduti','Guariti'],
             datasets:[{
-                data: [positivi,deceduti,guariti],
-                backgroundColor: ['#dc3545','#5F497F','#e1f5fe'],
-                borderColor: ['#dc3545','#5F497F','#e1f5fe']
+                data: [/*positivi,*/deceduti,guariti],
+                backgroundColor: [/*'#dc3545',*/'#5F497F','#e1f5fe'],
+                borderColor: [/*'#dc3545',*/'#5F497F','#e1f5fe']
             }]
         },
         options: {

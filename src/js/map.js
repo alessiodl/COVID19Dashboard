@@ -10,6 +10,7 @@ import VectorSource from 'ol/source/Vector';
 import {Fill, Stroke, Style, Text, Image, Circle} from 'ol/style';
 import XYZ from 'ol/source/XYZ';
 import Overlay from 'ol/Overlay';
+import Select from 'ol/interaction/Select';
 
 import axios from 'axios';
 import moment from 'moment';
@@ -28,7 +29,7 @@ const url = "https://covid19-it-api.herokuapp.com";
 var map = new Map({
     target: 'map',
     controls: defaultControls().extend([
-        new FullScreen({tipLabel:'Mappa a schermo intero'})
+        // new FullScreen({tipLabel:'Mappa a schermo intero'})
       ]),
     layers: [
         new TileLayer({
@@ -46,7 +47,6 @@ var map = new Map({
 });
 
 // Popup overlay
-// Popup showing the position the user clicked
 var popup = new Overlay({
     element: document.getElementById('popup')
 });
@@ -108,6 +108,16 @@ map.addLayer(provincesLayer)
 provincesLayer.set("name","Province")
 provincesLayer.setZIndex(10)
 
+// Provinces selection layer
+var selectedProvince = new VectorImageLayer({
+    source: new VectorSource({
+        format: new GeoJSON()
+    })
+});
+map.addLayer(selectedProvince)
+selectedProvince.set("name","Provincia selezionata")
+selectedProvince.setZIndex(13)
+
 // Region polygons
 var regionsLayer = new VectorImageLayer({
     source: new VectorSource({
@@ -149,6 +159,22 @@ map.on('pointermove', function(e) {
         e.map.getTargetElement().style.cursor = '';
     }
 });
+
+// Mouse click SELECT
+// ************************************************************
+/*
+map.on('click', function(e) {
+    if (e.dragging) return;
+    var pixel = e.map.getEventPixel(e.originalEvent);
+    e.map.forEachFeatureAtPixel(pixel, function (feature, layer) {
+        selectedProvince.getSource().clear()
+    	if (layer && layer.get('name') == 'Province'){
+            selectedProvince.getSource().addFeature(feature)
+            console.log(selectedProvince.getSource().getFeatures())
+        }
+    });
+});
+*/
 
 // Get COVID19 Summary Data
 // ************************************************************
@@ -216,19 +242,20 @@ const provincesDistribution = function(aggiornamento){
         provincesLayer.getSource().addFeatures(featureCollection);
         // Update provinces layer style
         var scale = chroma.scale(['#ffffe0', '#fff2c7', '#ffe5b1', '#ffd79d', '#ffc88e', 
-        '#ffba81', '#ffaa76', '#ff9a6e', '#fc8968', '#f77b63', 
-        '#f16b5f', '#e95d5a', '#e24f55', '#d8414e', '#cd3346', 
-        '#c3263d', '#b61932', '#a90c25', '#9a0316', '#8b0000'
-    ]).domain([0,Math.max.apply(Math, color_scale_domain)]);            
+            '#ffba81', '#ffaa76', '#ff9a6e', '#fc8968', '#f77b63', 
+            '#f16b5f', '#e95d5a', '#e24f55', '#d8414e', '#cd3346', 
+            '#c3263d', '#b61932', '#a90c25', '#9a0316', '#8b0000'
+        ]).domain([0,Math.max.apply(Math, color_scale_domain)]);            
         provincesLayer.getSource().forEachFeature(function (feature) {
-            var randomColor = scale(feature.get('totale_casi')).hex(); 
-            var randomStyle = new Style({
+            var provColor = scale(feature.get('totale_casi')).hex(); 
+            var provStyle = new Style({
                 stroke: new Stroke({ color: "#37474F", width: 1 }),
-                fill: new Fill({ color: randomColor })
+                fill: new Fill({ color: provColor })
                 
             }); 
-            feature.setStyle(randomStyle); // set feature Style
+            feature.setStyle(provStyle); // set feature Style
         });
+
         // Province Distribution Chart - To Do
         // regionDistributionChart(features)
     });
