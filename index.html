@@ -59,14 +59,16 @@
                         <i class="fas fa-history"></i> Storico
                     </div>
                     <div class="card-body">
-                        <div class="card-text">
+                        <div class="card-text pl-2 pr-2 pb-1">
                             <div class="row">
-                                <div class="col-6 col-md-10">
+                                <div class="col-12">
                                     <div id="slider"></div>
                                 </div>
-                                <div class="col-6 col-md-2 text-center">
+                                <!-- 
+                                <div class="col-6 col-md-1 text-center">
                                     <div id="slider_current_value"></div>
                                 </div>
+                                -->
                             </div>
                         </div>
                     </div>
@@ -87,6 +89,7 @@
                                 <div id="popup-content"></div>
                             </div>
                         </div>
+                        <!-- 
                         <div class="card-footer text-muted p-4">
                             <i class="fas fa-database"></i> I dati visibili in questa applicazione sono ottenuti attraverso un 
                         <a href="https://github.com/alessiodl/COVID19Feed2Json" target="_blank" class="text-warning">servizio web</a> basato sulla
@@ -95,7 +98,7 @@
                         un <a href="https://github.com/pcm-dpc/COVID-19" target="_blank" class="text-warning">repository dedicato</a> il resoconto aggiornato della situazione nazionale.
                         <br/><br/>
                         <i class="fab fa-github"></i> by <a class="text-info" target="_blank" href="https://github.com/alessiodl/COVID19Dashboard">Alessio Di Lorenzo</a>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
@@ -127,35 +130,57 @@
                         </div>
                     </div>
                 </div>
-                <!-- Bar Chart -->
+
+                <!-- Tabs -->
+
                 <div class="row">
                     <div class="col-12">
-                        <div class="card bg-primary bg-dark text-white mb-3 custom-shadow">
-                            <div class="card-header">
-                                <i class="fas fa-chart-bar"></i> Distribuzione per Regione
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#reg-chart-tab" data-toggle="tab">
+                                  <i class="fas fa-chart-bar"></i> Casi per Regione
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                              <a class="nav-link" href="#new-chart-tab" data-toggle="tab">
+                                <i class="fas fa-chart-bar"></i> Nuovi casi
+                              </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#total-chart-tab" data-toggle="tab">
+                                  <i class="fas fa-chart-line"></i> Andamento
+                                </a>
+                              </li>
+                        </ul>
+                        <!-- Tab panes -->
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="reg-chart-tab" role="tabpanel" aria-labelledby="home-tab">
+                                <div class="card bg-primary bg-dark text-white mb-3 custom-shadow">
+                                    <div class="card-body">
+                                        <div class="card-text">
+                                            <canvas id="region-distribution-chart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="card-body">
-                                <div class="card-text">
-                                    <canvas id="region-distribution-chart"></canvas>
+                            <div class="tab-pane" id="total-chart-tab" role="tabpanel" aria-labelledby="profile-tab">
+                                <div class="card bg-primary bg-dark text-white mb-3 custom-shadow">
+                                    <div class="card-body">
+                                        <canvas id="total-cases-chart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="new-chart-tab" role="tabpanel" aria-labelledby="messages-tab">
+                                <div class="card bg-primary bg-dark text-white mb-3 custom-shadow">
+                                    <div class="card-body">
+                                        <canvas id="new-cases-chart"></canvas>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- Line Chart -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card bg-primary bg-dark text-white mb-3 custom-shadow">
-                            <div class="card-header">
-                                <i class="fas fa-chart-line"></i> Evoluzione dal 24 Febbraio 2020 alla data odierna
-                            </div>
-                            <div class="card-body">
-                                <canvas id="total-cases-chart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
+
             </div>
         </div>
     </div>

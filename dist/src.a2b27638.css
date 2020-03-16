@@ -10173,7 +10173,7 @@ body {
 
 #map {
   width: 100%;
-  height: 100vh;
+  height: 70vh;
 }
 
 .ol-control {
@@ -10250,6 +10250,16 @@ body {
   background: #dc3545 !important;
   height: 100%;
   width: 100%;
+}
+
+.noUi-pips {
+  position: absolute;
+  color: #FFF !important;
+  font-size: x-small;
+}
+
+.noUi-value {
+  padding-top: 5px !important;
 }
 .ol-box {
   box-sizing: border-box;

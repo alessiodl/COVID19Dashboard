@@ -38,13 +38,28 @@ const createSlider = function(_data_){
         start: moment(last_date).valueOf(),
         step: dateArray.length,
         snap: true,
-        range: rangers
+        range: rangers,
+        pips: {
+            mode: 'range', 
+            filter: function (value, type) {
+                if (type === 0) {
+                    return -1;
+                }
+                return 1;
+            },
+            // values: 3,
+            format:{
+                to: function(value){
+                    return moment(value).format('DD/MM')
+                }
+            } 
+        }
     });
 
     // Slider Update Event
     slider.noUiSlider.on('update', function (values, handle) {
         // console.log(parseInt(values[handle]))
-        document.querySelector('#slider_current_value').innerHTML = moment(parseInt(values[handle])).format('DD MMM');
+        // document.querySelector('#slider_current_value').innerHTML = moment(parseInt(values[handle])).format('DD MMM');
     });
 
     slider.noUiSlider.on('slide', function (values, handle){
@@ -60,7 +75,7 @@ const createSlider = function(_data_){
             // Update total count
             document.querySelector("#tot-contagi").innerHTML = totale_casi
             // Update date
-            document.querySelector("#data-at").innerHTML = moment(aggiornamento).format('DD MMM YYYY, HH:mm')
+            document.querySelector("#data-at").innerHTML = moment(aggiornamento).format('DD MMM YYYY')
             // LastState Chart
             lastStateChartFn(response.data[0])
             // Last Outcomes Chart

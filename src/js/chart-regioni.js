@@ -39,7 +39,7 @@ const regionDistributionChart = function(data){
 		},
 		options: {
             responsive:true,
-            aspectRatio: 2.2,
+            aspectRatio: 2.4,
             title: {
                 display: false,
                 text: 'Distribuzione per Regione',

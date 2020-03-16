@@ -19,6 +19,7 @@ import chroma from 'chroma-js';
 import { lastStateChartFn, lastOutcomesChartFn } from './chart-stato'
 import { regionDistributionChart } from './chart-regioni'
 import { casesDiffusionChart } from './chart-cases'
+import { newCasesDiffusionChart } from './chart-new-cases'
 import { createSlider } from './slider'
 
 const url = "https://covid19-it-api.herokuapp.com";
@@ -59,7 +60,7 @@ var provincesCentrLayer = new VectorImageLayer({
     style: function(feature) {
         const casi = parseInt(feature.get('numero_casi'));
         var radius;
-        var fill = new Fill({color: 'rgba(13,71,161,.95)' });
+        var fill = new Fill({color: 'rgba(13,71,161,.75)' });
         var stroke = new Stroke({color: '#FFF', width: 1});
         if (casi == 0) {
             radius = null;
@@ -93,7 +94,7 @@ var provincesCentrLayer = new VectorImageLayer({
         
     }
 });
-map.addLayer(provincesCentrLayer);
+// map.addLayer(provincesCentrLayer);
 provincesCentrLayer.set("name","Centroidi Province");
 provincesCentrLayer.setZIndex(12)
 
@@ -135,10 +136,10 @@ map.on('pointermove', function(e) {
                                             + "Tamponi: "+feature.getProperties().tamponi
                                             + "<br/>Totale casi: "+feature.getProperties().totale_casi
                                             + "<br/>Positivi: "+feature.getProperties().totale_attualmente_positivi
-            } else if (layer.get('name')=='Centroidi Province'){
-                popupContent.innerHTML = "<h5 class='text-white'>"+feature.getProperties().provincia+": "+feature.getProperties().numero_casi+" casi</h5>"
+            } else if (layer.get('name')=='Province'){
+                popupContent.innerHTML = "<h5 class='text-white'>"+feature.getProperties().denominazione_provincia+": "+feature.getProperties().totale_casi+" casi</h5>"
             }
-            return layer.get('name') === 'Centroidi Province' || layer.get('name') === 'Regioni';
+            return layer.get('name') === 'Centroidi Province' || layer.get('name') === 'Regioni' || layer.get('name') === 'Province';
         }
     });
     if (hit){
@@ -157,7 +158,7 @@ axios.get(url+'/andamento',{ params:{} }).then(function(response){
     // Update total count
     document.querySelector("#tot-contagi").innerHTML = totale_casi
     // Update date
-    document.querySelector("#data-at").innerHTML = moment(aggiornamento).format('DD MMM YYYY, HH:mm')
+    document.querySelector("#data-at").innerHTML = moment(aggiornamento).format('DD MMM YYYY')
     // LastState Chart
     lastStateChartFn(response.data[0])
     // Last Outcomes Chart
@@ -168,6 +169,8 @@ axios.get(url+'/andamento',{ params:{} }).then(function(response){
     provincesDistribution(aggiornamento)
     // Trend Chart
     casesDiffusionChart(response.data);
+    // New Cases Chart
+    newCasesDiffusionChart(response.data);
     // Slider - decommentare una volta che saranno stati sistemati i dati dal DPC
     createSlider(response.data)
 });
