@@ -60,9 +60,9 @@ var provincesCentrLayer = new VectorImageLayer({
         format: new GeoJSON()
     }),
     style: function(feature) {
-        const casi = parseInt(feature.get('numero_casi'));
+        const casi = parseInt(feature.get('totale_casi'));
         var radius;
-        var fill = new Fill({color: 'rgba(13,71,161,.75)' });
+        var fill = new Fill({color: 'rgba(255,68,68,.75)' });
         var stroke = new Stroke({color: '#FFF', width: 1});
         if (casi == 0) {
             radius = null;
@@ -96,9 +96,9 @@ var provincesCentrLayer = new VectorImageLayer({
         
     }
 });
-// map.addLayer(provincesCentrLayer);
+map.addLayer(provincesCentrLayer);
 provincesCentrLayer.set("name","Centroidi Province");
-provincesCentrLayer.setZIndex(12)
+provincesCentrLayer.setZIndex(13)
 
 // Provinces polygons
 var provincesLayer = new VectorImageLayer({
@@ -109,16 +109,6 @@ var provincesLayer = new VectorImageLayer({
 map.addLayer(provincesLayer)
 provincesLayer.set("name","Province")
 provincesLayer.setZIndex(10)
-
-// Provinces selection layer
-var selectedProvince = new VectorImageLayer({
-    source: new VectorSource({
-        format: new GeoJSON()
-    })
-});
-map.addLayer(selectedProvince)
-selectedProvince.set("name","Provincia selezionata")
-selectedProvince.setZIndex(13)
 
 // Region polygons
 var regionsLayer = new VectorImageLayer({
@@ -149,7 +139,7 @@ map.on('pointermove', function(e) {
                                             + "Tamponi: "+feature.getProperties().tamponi
                                             + "<br/>Totale casi: "+feature.getProperties().totale_casi
                                             + "<br/>Positivi: "+feature.getProperties().totale_attualmente_positivi
-            } else if (layer.get('name')=='Province'){
+            } else if (layer.get('name')=='Province' || layer.get('name')=='Centroidi Province'){
                 popupContent.innerHTML = "<h5 class='text-white'>"+feature.getProperties().denominazione_provincia+": "+feature.getProperties().totale_casi+" casi</h5>"
             }
             return layer.get('name') === 'Centroidi Province' || layer.get('name') === 'Regioni' || layer.get('name') === 'Province';
@@ -297,7 +287,7 @@ var zoomRegionLayer = new VectorImageLayer({
     }
 })
 map.addLayer(zoomRegionLayer)
-zoomRegionLayer.setZIndex(20);
+zoomRegionLayer.setZIndex(12);
 
 const zoomToGeometry = function(reg){
     zoomRegionLayer.getSource().clear();

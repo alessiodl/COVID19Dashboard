@@ -35,7 +35,7 @@ const trendChart = function(data){
                 if (o.prov == key) return o.totale_casi;
             });
             var randomColor = lodash.sample(colors)
-            datasets.push({label:key, data:data_arr,fill:false,backgroundColor: randomColor, borderColor: randomColor})
+            datasets.push({label:key, lineTension: 0, data:data_arr,fill:false,backgroundColor: randomColor, borderColor: randomColor})
         })
         
     } else {
@@ -52,6 +52,7 @@ const trendChart = function(data){
 
         var datasets = [{
             label: 'Contagiati',
+            lineTension: 0,
             backgroundColor: '#ff4444',
             borderColor: '#ff4444',
             data: total_cases,
@@ -59,17 +60,20 @@ const trendChart = function(data){
         },{
             label: 'Attualmente positivi',
             backgroundColor: '#CC0000',
+            lineTension: 0,
             borderColor: '#CC0000',
             data: positive,
             fill: false
         },{
             label: 'Guariti',
+            lineTension: 0,
             backgroundColor: '#e1f5fe',
             borderColor: '#e1f5fe',
             data: recovered,
             fill: false
         },{
             label: 'Deceduti',
+            lineTension: 0,
             backgroundColor: '#5F497F',
             borderColor: '#5F497F',
             data: dead,
@@ -83,7 +87,7 @@ const trendChart = function(data){
     if (totCasesChart) {totCasesChart.destroy(); }
     
     totCasesChart = new Chart(ctx, {
-		type: 'line',
+        type: 'line',
 		data: {
 			labels: bullettin_dates,
 			datasets: datasets
