@@ -2,7 +2,7 @@ import 'chart.js';
 
 let lastStateChart;
 const lastStateChartFn = function(data){
-    // console.log(data.aggiornamento)
+    // console.log(data)
     var domiciliare = data.isolamento_domiciliare;
     var ricoverati  = data.ricoverati_con_sintomi;
     var tintensiva  = data.terapia_intensiva;
@@ -21,7 +21,7 @@ const lastStateChartFn = function(data){
         },
         options: {
             responsive:true,
-            aspectRatio: 3,
+            aspectRatio: 4.1,
             legend:{
                 display:true,
                 position: 'right',
@@ -53,7 +53,7 @@ const lastOutcomesChartFn = function(data){
         },
         options: {
             responsive:true,
-            aspectRatio: 3,
+            aspectRatio: 4.1,
             legend:{
                 display:true,
                 position: 'right',

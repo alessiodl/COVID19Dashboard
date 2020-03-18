@@ -4,27 +4,62 @@ import moment from 'moment';
 
 let newCasesChart;
 const newCasesDiffusionChart = function(data){
+    // console.log(data)
+
     // Dataset
-    var total_cases = []
-    var positive = []
-    var dead = []
-    var recovered = []
+    var total_cases     = []
+    var positive        = []
+    var deceduti        = []
+    var dimessi_guariti = []
     var bullettin_dates = []
+    
     data.forEach(d =>{
         total_cases.push(d.totale_casi) 
         positive.push(d.totale_attualmente_positivi)
-        // dead.push(d.deceduti)
-        // recovered.push(d.dimessi_guariti)
+        deceduti.push(d.deceduti)
+        dimessi_guariti.push(d.dimessi_guariti)
         bullettin_dates.push(moment(d.data).format('DD MMM'))
     });
-
-    var total_cases_daily_increment = [0]
-    total_cases.forEach(function(element,index){
+    
+    var positive_daily_increment = [0]
+    positive.forEach(function(element,index){
         if (index > 0){
-            var daily_increment = element - total_cases[index -1];
-            total_cases_daily_increment.push(daily_increment)
+            var daily_increment = element - positive[index -1];
+            if (daily_increment > 0){
+                positive_daily_increment.push(daily_increment)
+            } else {
+                positive_daily_increment.push(0)
+            }
         }
-        // console.log(total_cases_daily_increment)
+        // console.log(positive_daily_increment)
+    });
+
+    var deceduti_daily_increment = [0]
+    deceduti.forEach(function(element,index){
+        if (index > 0){
+            var daily_increment = element - deceduti[index -1];
+            if (daily_increment > 0){
+                deceduti_daily_increment.push(daily_increment)
+            } else {
+                deceduti_daily_increment.push(0)
+            }
+        }
+        // console.log(deceduti_daily_increment)
+    });
+
+    var guariti_daily_increment = [0]
+    dimessi_guariti.forEach(function(element,index){
+        if (index > 0){
+            var daily_increment = element - dimessi_guariti[index -1];
+            if (daily_increment > 0){
+                guariti_daily_increment.push(daily_increment)
+            } else {
+                guariti_daily_increment.push(0)
+            }
+        } else {
+            guariti_daily_increment.push(0)
+        }
+        // console.log(guariti_daily_increment)
     });
 
     // Grafico
@@ -36,18 +71,30 @@ const newCasesDiffusionChart = function(data){
 		data: {
 			labels: bullettin_dates,
 			datasets:[{
-				label: 'Casi in più',
-				backgroundColor: '#ff4444',
-				borderColor: '#ff4444',
-				data: total_cases_daily_increment,
+				label: 'attualmente positivi in più',
+				backgroundColor: '#CC0000',
+				borderColor: '#CC0000',
+				data: positive_daily_increment,
+				fill: false
+			},{
+				label: 'guariti in più',
+				backgroundColor: '#e1f5fe',
+				borderColor: '#e1f5fe',
+				data: guariti_daily_increment,
+				fill: false
+			},{
+				label: 'deceduti in più',
+				backgroundColor: '#5F497F',
+				borderColor: '#5F497F',
+				data: deceduti_daily_increment,
 				fill: false
 			}]
 		},
 		options: {
             responsive:true,
-            aspectRatio: 2.4,
+            aspectRatio: 2.6,
             legend:{
-                display:false,
+                display:true,
                 position: 'top',
                 labels:{
                     fontColor:'#bdbdbd'
@@ -55,7 +102,7 @@ const newCasesDiffusionChart = function(data){
             },
             title:{
                 display: true,
-                text: 'Casi in più rispetto al giorno precedente',
+                text: 'Incrementi rispetto al giorno precedente',
                 fontColor:'#bdbdbd'
             },
             scales: {

@@ -3,18 +3,58 @@ import 'chartjs-plugin-zoom';
 
 let regChart;
 const regionDistributionChart = function(data){
+
     data.sort(num_cases_sorter).reverse()
-    // Dataset
-    var tot_casi = [];
-    var tot_positivi = [];
-    var labels = [];
-    data.forEach(function(element){
-        tot_casi.push(element.properties.totale_casi);
-        tot_positivi.push(element.properties.totale_attualmente_positivi);
-        if (element.properties.totale_casi > 0){
-            labels.push(element.properties.denominazione_regione);
-        }
-    })
+
+    if ('sigla_provincia' in data[0].properties){
+        // console.log('dati per regione')
+        // Dataset
+        var tot_casi = [];
+        var labels = [];
+        data.forEach(function(element){
+            tot_casi.push(element.properties.totale_casi);
+            if (element.properties.totale_casi > 0){
+                labels.push(element.properties.denominazione_provincia);
+            }
+        })
+
+        var datasets = [{
+            label: 'Contagiati',
+            backgroundColor: '#ff4444',
+            borderColor: '#ff4444',
+            data: tot_casi,
+            fill: false
+        }]
+
+    } else {
+        // console.log('dati nazionali')
+        // Dataset
+        var tot_casi = [];
+        var tot_positivi = [];
+        var labels = [];
+        data.forEach(function(element){
+            tot_casi.push(element.properties.totale_casi);
+            tot_positivi.push(element.properties.totale_attualmente_positivi);
+            if (element.properties.totale_casi > 0){
+                labels.push(element.properties.denominazione_regione);
+            }
+        });
+
+        var datasets = [{
+            label: 'Contagiati',
+            backgroundColor: '#ff4444',
+            borderColor: '#ff4444',
+            data: tot_casi,
+            fill: false
+        },{
+            label: 'Attualmente positivi',
+            backgroundColor: '#CC0000',
+            borderColor: '#CC0000',
+            data: tot_positivi,
+            fill: false
+        }]
+    }
+    
     // Grafico
 	var ctx = document.getElementById('region-distribution-chart').getContext('2d');
     if (regChart) {regChart.destroy(); }
@@ -23,26 +63,14 @@ const regionDistributionChart = function(data){
 		type: 'bar',
 		data: {
 			labels: labels,
-			datasets:[{
-				label: 'Contagiati',
-				backgroundColor: '#ff4444',
-				borderColor: '#ff4444',
-				data: tot_casi,
-				fill: false
-			},{
-				label: 'Attualmente positivi',
-				backgroundColor: '#CC0000',
-				borderColor: '#CC0000',
-				data: tot_positivi,
-				fill: false
-			}]
+			datasets: datasets
 		},
 		options: {
             responsive:true,
-            aspectRatio: 2.4,
+            aspectRatio: 2.6,
             title: {
                 display: false,
-                text: 'Distribuzione per Regione',
+                text: 'Distribuzione casi',
                 fontColor:'#FFF',
                 fontStyle: 'bold',
                 fontSize: 12

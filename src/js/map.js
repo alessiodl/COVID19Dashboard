@@ -2,7 +2,8 @@ import 'ol/ol.css';
 import Map from 'ol/Map';
 import View from 'ol/View';
 import {defaults as defaultControls, FullScreen} from 'ol/control';
-import {fromLonLat, transform} from 'ol/proj';
+import {fromLonLat, getTransform} from 'ol/proj';
+import {applyTransform} from 'ol/extent';
 import {Tile as TileLayer} from 'ol/layer';
 import GeoJSON from 'ol/format/GeoJSON';
 import VectorImageLayer from 'ol/layer/VectorImage';
@@ -10,20 +11,21 @@ import VectorSource from 'ol/source/Vector';
 import {Fill, Stroke, Style, Text, Image, Circle} from 'ol/style';
 import XYZ from 'ol/source/XYZ';
 import Overlay from 'ol/Overlay';
-import Select from 'ol/interaction/Select';
+import Feature from 'ol/Feature';
 
 import axios from 'axios';
 import moment from 'moment';
-
 import chroma from 'chroma-js';
 
 import { lastStateChartFn, lastOutcomesChartFn } from './chart-stato'
 import { regionDistributionChart } from './chart-regioni'
-import { casesDiffusionChart } from './chart-cases'
+import { trendChart } from './chart-trend'
 import { newCasesDiffusionChart } from './chart-new-cases'
 import { createSlider } from './slider'
+import { populateRegionsMenu } from './filters'
 
 const url = "https://covid19-it-api.herokuapp.com";
+const ItalyExtent = [3.691406249999991, 35.31736632923787, 22.67578124999999, 47.57652571374621];
 
 // Map
 var map = new Map({
@@ -124,7 +126,8 @@ var regionsLayer = new VectorImageLayer({
         format: new GeoJSON()
     }),
     style: new Style({
-        stroke: new Stroke({ color: "#37474F", width: 2 })
+        stroke: new Stroke({ color: "#37474F", width: 2 })/*,
+        fill: new Fill({ color: "rgba(255,255,255,0.75)" })*/
     })
 });
 map.addLayer(regionsLayer)
@@ -160,22 +163,6 @@ map.on('pointermove', function(e) {
     }
 });
 
-// Mouse click SELECT
-// ************************************************************
-/*
-map.on('click', function(e) {
-    if (e.dragging) return;
-    var pixel = e.map.getEventPixel(e.originalEvent);
-    e.map.forEachFeatureAtPixel(pixel, function (feature, layer) {
-        selectedProvince.getSource().clear()
-    	if (layer && layer.get('name') == 'Province'){
-            selectedProvince.getSource().addFeature(feature)
-            console.log(selectedProvince.getSource().getFeatures())
-        }
-    });
-});
-*/
-
 // Get COVID19 Summary Data
 // ************************************************************
 axios.get(url+'/andamento',{ params:{} }).then(function(response){
@@ -194,7 +181,7 @@ axios.get(url+'/andamento',{ params:{} }).then(function(response){
     // Populate region distribution layer
     provincesDistribution(aggiornamento)
     // Trend Chart
-    casesDiffusionChart(response.data);
+    trendChart(response.data);
     // New Cases Chart
     newCasesDiffusionChart(response.data);
     // Slider - decommentare una volta che saranno stati sistemati i dati dal DPC
@@ -218,6 +205,8 @@ const regionDistribution = function(aggiornamento){
         regionsLayer.getSource().addFeatures(featureCollection);
         // Regional Distribution Chart
         regionDistributionChart(features)
+        // Regions filter
+        populateRegionsMenu(features)
     });
 }
 
@@ -241,18 +230,27 @@ const provincesDistribution = function(aggiornamento){
         // Update provinces layer
         provincesLayer.getSource().addFeatures(featureCollection);
         // Update provinces layer style
-        var scale = chroma.scale(['#ffffe0', '#fff2c7', '#ffe5b1', '#ffd79d', '#ffc88e', 
+        /*var scale = chroma.scale([
+            '#ffffe0', '#fff2c7', '#ffe5b1', '#ffd79d', '#ffc88e', 
             '#ffba81', '#ffaa76', '#ff9a6e', '#fc8968', '#f77b63', 
             '#f16b5f', '#e95d5a', '#e24f55', '#d8414e', '#cd3346', 
             '#c3263d', '#b61932', '#a90c25', '#9a0316', '#8b0000'
-        ]).domain([0,Math.max.apply(Math, color_scale_domain)]);            
+        ]).domain([0,Math.max.apply(Math, color_scale_domain)]); */
+        var scale = chroma.scale('Reds').domain([0,Math.max.apply(Math, color_scale_domain)]);
         provincesLayer.getSource().forEachFeature(function (feature) {
-            var provColor = scale(feature.get('totale_casi')).hex(); 
-            var provStyle = new Style({
-                stroke: new Stroke({ color: "#37474F", width: 1 }),
-                fill: new Fill({ color: provColor })
-                
-            }); 
+            var provStyle;
+            if (feature.get('totale_casi') == 0){
+                provStyle = new Style({
+                    stroke: new Stroke({ color: "#37474F", width: 1 }),
+                    fill: new Fill({ color: 'rgba(255,255,255,0.75)' })
+                }); 
+            } else {
+                var provColor = scale(feature.get('totale_casi')).hex(); 
+                provStyle = new Style({
+                    stroke: new Stroke({ color: "#37474F", width: 1 }),
+                    fill: new Fill({ color: provColor })
+                }); 
+            }
             feature.setStyle(provStyle); // set feature Style
         });
 
@@ -275,4 +273,49 @@ const provincesDistribution = function(aggiornamento){
     })
 }
 
-export { regionDistribution, provincesDistribution }
+var zoomRegionLayer = new VectorImageLayer({
+    source: new VectorSource({
+        format:new GeoJSON()
+    }),
+    style: function(){
+        var external = new Style({
+			stroke: new Stroke({
+				color: '#b71c1c',
+				width: 8
+			}),
+			zIndex: 1
+		});
+		var internal = new Style({
+			stroke: new Stroke({
+			 	color: '#FFF',
+			 	width: 2,
+			 	lineCap: 'round'
+			}),
+		    zIndex: 3
+		});
+		return [external,internal]
+    }
+})
+map.addLayer(zoomRegionLayer)
+zoomRegionLayer.setZIndex(20);
+
+const zoomToGeometry = function(reg){
+    zoomRegionLayer.getSource().clear();
+    var selected_region_feature = []
+    var features = regionsLayer.getSource().getFeatures();
+    features.forEach(feature =>{
+        if (feature.getProperties().codice_regione == reg){
+            selected_region_feature.push(feature)
+        }
+    });
+    zoomRegionLayer.getSource().addFeatures(selected_region_feature);
+    var extent = zoomRegionLayer.getSource().getExtent();
+	map.getView().fit(extent, map.getSize());
+}
+
+const zoomToItaly = function(){
+    var boundingExtent = applyTransform(ItalyExtent, getTransform("EPSG:4326", "EPSG:3857"));
+    map.getView().fit(boundingExtent, map.getSize());
+}
+
+export { regionDistribution, provincesDistribution, zoomToGeometry, zoomRegionLayer, zoomToItaly }

@@ -4,8 +4,9 @@ import moment from 'moment'
 import axios from 'axios'
 
 import { lastStateChartFn, lastOutcomesChartFn } from './chart-stato'
-import { casesDiffusionChart } from './chart-cases'
+//import { casesDiffusionChart } from './chart-trend'
 import { regionDistribution, provincesDistribution } from './map'
+import { regionsFilter } from './filters'
 
 const createSlider = function(_data_){
 
@@ -56,11 +57,6 @@ const createSlider = function(_data_){
         }
     });
 
-    // Slider Update Event
-    slider.noUiSlider.on('update', function (values, handle) {
-        // console.log(parseInt(values[handle]))
-        // document.querySelector('#slider_current_value').innerHTML = moment(parseInt(values[handle])).format('DD MMM');
-    });
 
     slider.noUiSlider.on('slide', function (values, handle){
 
@@ -81,11 +77,15 @@ const createSlider = function(_data_){
             // Last Outcomes Chart
             lastOutcomesChartFn(response.data[0])
             // Populate region distribution layer and chart
-            regionDistribution(slider_date);
+            if (document.querySelector('#select-regione').value == ''){
+                regionDistribution(slider_date);
+            } else {
+                var reg_code = document.querySelector('#select-regione').value
+                regionsFilter(reg_code)
+                
+            }
             // Populate provinces distribution layer
             provincesDistribution(slider_date);
-            // Trend Chart
-            // casesDiffusionChart(response.data);
         });
     })
 
