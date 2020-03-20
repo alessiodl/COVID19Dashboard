@@ -74,8 +74,8 @@ const trendChart = function(data){
         },{
             label: 'Deceduti',
             lineTension: 0,
-            backgroundColor: '#5F497F',
-            borderColor: '#5F497F',
+            backgroundColor: '#1976d2',
+            borderColor: '#1976d2',
             data: dead,
             fill: false
         }]

@@ -84,8 +84,8 @@ const newCasesDiffusionChart = function(data){
 				fill: false
 			},{
 				label: 'deceduti in più',
-				backgroundColor: '#5F497F',
-				borderColor: '#5F497F',
+				backgroundColor: '#1976d2',
+				borderColor: '#1976d2',
 				data: deceduti_daily_increment,
 				fill: false
 			}]

@@ -47,8 +47,8 @@ const lastOutcomesChartFn = function(data){
             labels:[/*'Positivi',*/'Deceduti','Guariti'],
             datasets:[{
                 data: [/*positivi,*/deceduti,guariti],
-                backgroundColor: [/*'#dc3545',*/'#5F497F','#e1f5fe'],
-                borderColor: [/*'#dc3545',*/'#5F497F','#e1f5fe']
+                backgroundColor: [/*'#dc3545',*/'#1976d2','#e1f5fe'],
+                borderColor: [/*'#dc3545',*/'#1976d2','#e1f5fe']
             }]
         },
         options: {
