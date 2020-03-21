@@ -10,8 +10,8 @@ import { regionsFilter } from './filters'
 
 const createSlider = function(_data_){
 
-    var slider = document.querySelector('#slider');
-
+    const slider = document.querySelector('#slider');
+    
     var dateArray = [];
     
     // Create Array of all dates
@@ -57,8 +57,7 @@ const createSlider = function(_data_){
         }
     });
 
-
-    slider.noUiSlider.on('slide', function (values, handle){
+    slider.noUiSlider.on('update', function (values, handle){
 
         var url =  "https://covid19-it-api.herokuapp.com";
 
@@ -88,6 +87,26 @@ const createSlider = function(_data_){
             provincesDistribution(slider_date);
         });
     })
+
+    // Slider play tools
+    var step_bw = document.querySelector("#slider-step-bw")
+    var step_fw = document.querySelector("#slider-step-fw")
+
+    step_bw.addEventListener('click', function(e){
+        var slider_start_position = slider.noUiSlider.get()
+        var slider_date = moment(parseInt(slider_start_position)).valueOf()
+        var bw_date = moment(slider_date).subtract(24, "h").valueOf()
+        // alert(bw_date)
+        slider.noUiSlider.set(bw_date)
+    });
+
+    step_fw.addEventListener('click', function(e){
+        var slider_start_position = slider.noUiSlider.get()
+        var slider_date = moment(parseInt(slider_start_position)).valueOf()
+        var fw_date = moment(slider_date).add(24, "h").valueOf()
+        // alert(fw_date)
+        slider.noUiSlider.set(fw_date)
+    });
 
 }
 

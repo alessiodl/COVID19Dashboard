@@ -24,7 +24,7 @@
                 </span>
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <button class="btn btn-link text-white" id="show-tools-btn" data-toggle="modal" data-target="#infoModal"><i class="fas fa-question-circle"></i> Info</button>
+                        <button class="btn btn-link text-white" id="show-tools-btn" data-toggle="modal" data-target="#infoModal"><i class="fas fa-question-circle fa-lg"></i> Info</button>
                     </li>
                 </ul>
             </div>
@@ -44,10 +44,11 @@
                         <i class="fas fa-database"></i> I dati visibili in questa applicazione sono ottenuti attraverso un 
                         <a href="https://github.com/alessiodl/COVID19Feed2Json" target="_blank" class="text-warning">servizio web</a> basato sulla
                         lettura in tempo reale delle informazioni messe a disposizione dal <a href="http://www.protezionecivile.gov.it/" class="text-warning" target="_blank">
-                        Sito del Dipartimento della Protezione Civile - Presidenza del Consiglio dei Ministri</a>. Ogni giorno, alle 18:00, viene pubblicato e condiviso su
+                        Sito del Dipartimento della Protezione Civile - Presidenza del Consiglio dei Ministri</a>. Ogni giorno, alle 18:30, viene pubblicato e condiviso su
                         un <a href="https://github.com/pcm-dpc/COVID-19" target="_blank" class="text-warning">repository dedicato</a> il resoconto aggiornato della situazione nazionale.
                         <br/><br/>
                         <div class="text-center">
+                            <p><i class="fas fa-laptop-code"></i> <span class="text-muted">Ideazione, progettazione e sviluppo</span> <a class="text-info" target="_blank" href="https://github.com/alessiodl"><strong>Alessio Di Lorenzo</strong></a></p>
                             <p><a class="text-info" target="_blank" href="https://izs.it">Istituto Zooprofilattico Sperimentale dell'Abruzzo e del Molise "G. Caporale"</a></p>
                             <img src="IZSAM_white.png"/>
                         </div>
@@ -86,7 +87,9 @@
             <div class="col-12 col-lg-6 mt-1">
                 <div class="card bg-info text-white h-100 mb-3 custom-shadow">
                     <div class="card-header">
-                        <i class="fas fa-history"></i> Storico
+                        <i class="fas fa-history"></i> Storico 
+                        <button id="slider-step-bw" class="text-white btn btn-outline-info-dark btn-sm" title="Giorno precedente"><i class="fas fa-step-backward fa-lg"></i></i></button>
+                        <button id="slider-step-fw" class="text-white btn btn-outline-info-dark btn-sm" title="Giorno successivo"><i class="fas fa-step-forward fa-lg"></i></button>
                     </div>
                     <div class="card-body">
                         <div class="card-text pl-2 pr-2 pb-1">
