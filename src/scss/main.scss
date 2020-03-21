@@ -22,6 +22,7 @@ $theme-colors: (
     **********************
 */
 @import './partials/base';
-@import './partials/_map';
+@import './partials/map';
+@import './partials/charts';
 @import './partials/slider';
 

@@ -94,7 +94,8 @@ const trendChart = function(data){
 		},
 		options: {
             responsive:true,
-            aspectRatio: 2.6,
+            // aspectRatio: 2.7,
+            maintainAspectRatio: false,
             legend:{
                 display:true,
                 position: 'top',

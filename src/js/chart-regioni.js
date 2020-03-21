@@ -67,7 +67,8 @@ const regionDistributionChart = function(data){
 		},
 		options: {
             responsive:true,
-            aspectRatio: 2.6,
+            // aspectRatio: 2.7,
+            maintainAspectRatio: false,
             title: {
                 display: false,
                 text: 'Distribuzione casi',
