@@ -10,6 +10,7 @@ import { trendChart } from './chart-trend';
 
 const populateRegionsMenu = function(data){
     // console.log(data[0])
+    $('#select-regione').empty()
     data.forEach((element)=>{
         var value = element.properties.codice_regione;
         var label = element.properties.denominazione_regione;
