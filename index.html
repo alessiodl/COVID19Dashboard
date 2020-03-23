@@ -58,12 +58,12 @@
         </div>
         <!-- Badges -->
         <div class="row">
-            <div class="col-6 col-lg-3 mt-1 pr-1">
+            <div class="col-6 col-xl-3 mt-1 pr-1">
                 <div class="card bg-info text-white h-100 mb-3 custom-shadow">
                     <div class="card-header">
                         <i class="fas fa-tachometer-alt"></i> Contagiati
                     </div>
-                    <div class="card-body m-auto d-flex align-items-center">
+                    <div class="card-body m-auto d-flex align-items-center summary-container">
                         <h2 class="text-center">
                             <span id="tot-contagi"></span>
                         </h2>
@@ -71,12 +71,12 @@
                 </div>
             </div>
 
-            <div class="col-6 col-lg-3 mt-1 pl-1">
+            <div class="col-6 col-xl-3 mt-1 pl-1">
                 <div class="card bg-info text-white h-100 mb-3 custom-shadow">
                     <div class="card-header">
                         <i class="far fa-calendar-alt"></i> Aggiornamento
                     </div>
-                    <div class="card-body m-auto d-flex align-items-center">
+                    <div class="card-body m-auto d-flex align-items-center summary-container">
                         <h2 class="text-center">
                             <span id="data-at"></span>
                         </h2>
@@ -84,7 +84,7 @@
                 </div>
             </div>
             <!-- Slider -->
-            <div class="col-12 col-lg-6 mt-1">
+            <div class="col-12 col-xl-6 mt-1">
                 <div class="card bg-info text-white h-100 mb-3 custom-shadow">
                     <div class="card-header">
                         <i class="fas fa-history"></i> Storico 
@@ -125,7 +125,7 @@
                 <div class="row">
                     <div class="col-12" id="filters-col">
                         <div class="card bg-primary bg-dark text-white mb-3 custom-shadow">
-                            <div class="card-body">
+                            <div class="card-body filter-container">
                                 <div class="card-text">
                                     <div class="row">
                                         <div class="col-4 col-md-6">
@@ -134,10 +134,10 @@
                                                     data-width="100%" data-none-selected-text="Selezionare una Regione">       
                                             </select>
                                         </div>
-                                        <div class="col-5 col-md-4 align-self-center">
+                                        <div class="col-5 col-md-3 align-self-center">
                                             <span id="tot-contagi-reg" class="text-white my-auto"></span>
                                         </div>
-                                        <div class="col-3 col-md-2">
+                                        <div class="col-2 col-md-3">
                                             <button id="reset-filters-btn" class="btn btn-primary btn-block btn-sm">Reset</button>
                                         </div>
                                     </div>
@@ -150,19 +150,15 @@
                 <div class="row">
                     <div class="col-12 col-sm-6">
                         <div class="card bg-primary bg-dark text-white mb-3 custom-shadow">
-                            <div class="card-body">
-                                <div class="card-text" style="height:120px">
-                                    <canvas id="last-state-chart"></canvas>
-                                </div>
+                            <div class="card-body pie-container">
+                                <canvas id="last-state-chart"></canvas>
                             </div>
                         </div>
                     </div>
                     <div class="col-12 col-sm-6">
                         <div class="card bg-primary bg-dark text-white mb-3 custom-shadow">
-                            <div class="card-body">
-                                <div class="card-text" style="height:120px;">
-                                    <canvas id="last-outcome-chart"></canvas>
-                                </div>
+                            <div class="card-body pie-container">
+                                <canvas id="last-outcome-chart"></canvas>
                             </div>
                         </div>
                     </div>

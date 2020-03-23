@@ -10176,20 +10176,6 @@ body {
   height: calc(100vh - 295px);
 }
 
-@media only screen and (max-device-width: 640px) {
-  /* Styles */
-  #map {
-    width: 100%;
-    height: 300px;
-  }
-}
-@media only screen and (max-device-width: 850px) {
-  /* Styles */
-  #map {
-    width: 100%;
-    height: 450px;
-  }
-}
 .ol-control {
   border-radius: 1px !important;
   padding: 0px !important;
@@ -10251,25 +10237,16 @@ body {
   margin-left: -11px;
 }
 
+.pie-container {
+  position: relative;
+  height: 160px;
+}
+
 .chart-container {
   position: relative;
   height: calc(100vh - 605px);
 }
 
-@media only screen and (max-device-width: 640px) {
-  /* Styles */
-  .chart-container {
-    width: 100%;
-    height: 300px;
-  }
-}
-@media only screen and (max-device-width: 850px) {
-  /* Styles */
-  .chart-container {
-    width: 100%;
-    height: 450px;
-  }
-}
 #slider {
   width: 100%;
   height: 20px;
@@ -10293,6 +10270,91 @@ body {
 
 .noUi-value {
   padding-top: 5px !important;
+}
+
+@media only screen and (max-device-width: 640px) {
+  /* Styles */
+  #map {
+    width: 100%;
+    height: 300px;
+  }
+
+  .chart-container {
+    width: 100%;
+    height: 300px;
+  }
+}
+@media only screen and (max-device-width: 768px) {
+  /* Styles */
+  #map {
+    width: 100%;
+    height: 450px;
+  }
+
+  .chart-container {
+    width: 100%;
+    height: 450px;
+  }
+}
+@media only screen and (max-device-width: 960px) {
+  /* Styles */
+  #map {
+    width: 100%;
+    height: 450px;
+  }
+
+  .chart-container {
+    width: 100%;
+    height: 550px;
+  }
+}
+@media only screen and (max-device-width: 1024px) {
+  /* Styles */
+  .summary-container {
+    padding: 0px 15px !important;
+  }
+
+  #map {
+    width: 100%;
+    height: 388px;
+  }
+
+  .filter-container {
+    padding: 5px 15px !important;
+  }
+
+  .pie-container {
+    padding: 1px;
+    margin: 5px;
+    height: 80px;
+  }
+
+  .chart-container {
+    width: 100%;
+    height: 278px;
+  }
+}
+@media only screen and (max-device-width: 1440px) {
+  /* Styles */
+  #map {
+    width: 100%;
+    height: 488px;
+  }
+
+  .filter-container {
+    padding: 5px 15px !important;
+  }
+
+  .pie-container {
+    padding: 1px;
+    margin: 5px;
+    height: 80px;
+  }
+
+  .chart-container {
+    width: 100%;
+    height: 278px;
+  }
 }
 /*!
  * Bootstrap-select v1.13.12 (https://developer.snapappointments.com/bootstrap-select)

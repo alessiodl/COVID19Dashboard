@@ -1,20 +1,9 @@
+.pie-container {
+    position: relative;
+    height: 160px;
+}
+
 .chart-container {
     position:relative; 
     height: calc(100vh - 605px)
-}
-
-@media only screen and (max-device-width : 640px) {
-    /* Styles */
-    .chart-container {
-        width: 100%;
-        height: 300px;
-    }
-}
-    
-@media only screen and (max-device-width: 850px) {
-    /* Styles */
-    .chart-container {
-        width: 100%;
-        height: 450px;
-    }
 }
