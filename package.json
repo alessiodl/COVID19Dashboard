@@ -10,6 +10,8 @@
     "bootstrap": "^4.4.1",
     "bootstrap-select": "^1.13.12",
     "chart.js": "^2.9.3",
+    "chartjs-plugin-annotation": "^0.5.7",
+    "chartjs-plugin-colorschemes": "^0.4.0",
     "chartjs-plugin-zoom": "^0.7.5",
     "chroma-js": "^2.1.0",
     "jquery": "^3.4.1",

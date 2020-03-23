@@ -1,8 +1,9 @@
-import 'chart.js';
-import 'chartjs-plugin-zoom';
-import moment from 'moment';
+import 'chart.js'
+import 'chartjs-plugin-zoom'
+import 'chartjs-plugin-colorschemes'
+import 'chartjs-plugin-annotation'
+import moment from 'moment'
 import lodash from 'lodash'
-import chroma from 'chroma-js';
 
 let totCasesChart;
 const trendChart = function(data){
@@ -24,18 +25,12 @@ const trendChart = function(data){
         // console.log(grouped_data)
         var grouped_data = lodash.groupBy(provinces_total_cases,"prov");
         var datasets = []
-        /*var colors = [
-            '#8dd3c7','#ffffb3','#bebada','#fb8072',
-            '#80b1d3','#fdb462','#b3de69','#fccde5',
-            '#d9d9d9', '#bc80bd','#ccebc5','#ffed6f'
-        ]*/
-        var colors = chroma.scale('OrRd').colors(12)
+        
         lodash.forEach(grouped_data,function(item, key){
             var data_arr = lodash.map(item, function(o) {
                 if (o.prov == key) return o.totale_casi;
             });
-            var randomColor = lodash.sample(colors)
-            datasets.push({label:key, lineTension: 0, data:data_arr,fill:false,backgroundColor: randomColor, borderColor: randomColor})
+            datasets.push({label:key, lineTension: 0, data:data_arr, fill:false})
         })
         
     } else {
@@ -54,37 +49,71 @@ const trendChart = function(data){
             label: 'Contagiati',
             lineTension: 0,
             backgroundColor: '#ff4444',
+            pointBackgroundColor: '#ff4444',
             borderColor: '#ff4444',
+            pointBorderColor: '#ff4444',
             data: total_cases,
             fill: false
         },{
             label: 'Attualmente positivi',
-            backgroundColor: '#CC0000',
             lineTension: 0,
+            backgroundColor: '#CC0000',
+            pointBackgroundColor: '#CC0000',
             borderColor: '#CC0000',
+            pointBorderColor:'#CC0000',
             data: positive,
             fill: false
         },{
             label: 'Guariti',
             lineTension: 0,
             backgroundColor: '#e1f5fe',
+            pointBackgroundColor: '#e1f5fe',
             borderColor: '#e1f5fe',
+            pointBorderColor:'#e1f5fe',
             data: recovered,
             fill: false
         },{
             label: 'Deceduti',
             lineTension: 0,
             backgroundColor: '#1976d2',
+            pointBackgroundColor: '#1976d2',
             borderColor: '#1976d2',
+            pointBorderColor:'#1976d2',
             data: dead,
             fill: false
         }]
     }
     
-    
     // Grafico
 	var ctx = document.getElementById('total-cases-chart').getContext('2d');
     if (totCasesChart) {totCasesChart.destroy(); }
+
+    var date_dpcm = ['25 Feb', '29 Feb', '08 Mar', '11 Mar', '22 Mar'];
+    var desc_dpcm = ['Chiusura scuole Lombardia', 'dpcm zone rosse','dpcm #iorestoacasa', 'Chiusura ristoranti e negozi', 'dpcm'];
+    var adjust_y_dpcm = [0, -40, 0, -40, 0]
+    var adjust_x_dpcm = [25, 0, 0, 0, 0]
+    // populate 'annotations' array dynamically based on 'marketing'
+    var annotations = date_dpcm.map(function(date, index) {
+    return {
+        type: 'line',
+        id: 'vline' + index,
+        mode: 'vertical',
+        scaleID: 'x-axis-0',
+        value: date,
+        borderColor: 'green',
+        borderWidth: 1,
+        label: {
+            enabled: true,
+            position: "center",
+            fontStyle: "regular",
+            fontSize: "10px",
+            cornerRadius: 2,
+            content: desc_dpcm[index],
+            yAdjust: adjust_y_dpcm[index],
+            xAdjust: adjust_x_dpcm[index]
+        }
+    }
+    });
     
     totCasesChart = new Chart(ctx, {
         type: 'line',
@@ -110,12 +139,17 @@ const trendChart = function(data){
                     }
                 }],
                 xAxes:[{
+                    id: 'x-axis-0',
                     ticks:{
                         fontColor:'#FFF'
                     }
                 }]
-            },
-            plugins:{
+            }, 
+            /*annotation:{
+                drawTime: 'afterDatasetsDraw',
+                annotations: annotations
+            },*/
+            plugins: {
                 zoom:{
                     pan:{
                         enabled:true,
@@ -126,6 +160,10 @@ const trendChart = function(data){
                         mode: 'x',
                         speed: 0.05
                     }
+                },
+                colorschemes: {
+                    scheme: 'brewer.SetThree12',
+                    override: false
                 }
             }
 		}

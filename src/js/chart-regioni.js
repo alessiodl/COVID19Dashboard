@@ -31,16 +31,25 @@ const regionDistributionChart = function(data){
         // Dataset
         var tot_casi = [];
         var tot_positivi = [];
+        var tamponi = [];
         var labels = [];
         data.forEach(function(element){
             tot_casi.push(element.properties.totale_casi);
             tot_positivi.push(element.properties.totale_attualmente_positivi);
+            tamponi.push(element.properties.tamponi);
             if (element.properties.totale_casi > 0){
                 labels.push(element.properties.denominazione_regione);
             }
         });
 
         var datasets = [{
+            label: 'Tamponi',
+            backgroundColor: '#ef9a9a',
+            borderColor: '#ef9a9a',
+            data: tamponi,
+            fill: false,
+            hidden:true,
+        },{
             label: 'Contagiati',
             backgroundColor: '#ff4444',
             borderColor: '#ff4444',

@@ -29,7 +29,10 @@ const lastStateChartFn = function(data){
                 labels:{
                     fontColor:'#bdbdbd'
                 }
-            }
+            }/*,
+            animation:{
+                easing:'easeInExpo'
+            }*/
         } 
     })
 }

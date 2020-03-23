@@ -43,7 +43,6 @@ const createSlider = function(_data_){
         pips: {
             mode: 'range', 
             filter: function (value, type) {
-                console.log()
                 if (type === 0) {
                     return -1;
                 } else {
