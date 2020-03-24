@@ -46,7 +46,7 @@ const regionsFilter = function(reg){
 
     axios.get('https://covid19-it-api.herokuapp.com/province',{ params:params}).then(function(response){
         // Set Map Zoom
-        zoomToGeometry(reg)
+        zoomToGeometry(reg, aggiornamento)
         // Update distribution chart
         regionDistributionChart(response.data.features)
         // Update dashboard counter

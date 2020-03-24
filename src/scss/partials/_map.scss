@@ -4,6 +4,29 @@
     height: calc(100vh - 295px);
 }
 
+.ol-custom{
+    z-index: 1000;
+    top: 0.5em;
+    right: 0.5em;
+}
+
+.ol-custom-panel{
+    z-index: 999;
+    visibility: visible;
+    background-color:rgba(255,255,255,0.8) !important;
+    color:#4B515D;
+    width: auto;
+    height: auto;
+    top: 0.5em;
+    right: 0.5em;
+}
+
+ul.layer-list {
+    list-style-type: none;
+    margin: 5px 55px 5px 5px;
+    padding: 0;
+}
+
 .ol-control {
     border-radius: 1px !important;
     padding: 0px !important;
@@ -28,8 +51,6 @@
 .ol-zoom-out:hover{
     opacity:0.75 !important;
 }
-
-
 
 .ol-popup {
     position: absolute;

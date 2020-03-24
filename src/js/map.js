@@ -11,7 +11,6 @@ import VectorSource from 'ol/source/Vector';
 import {Fill, Stroke, Style, Text, Image, Circle} from 'ol/style';
 import XYZ from 'ol/source/XYZ';
 import Overlay from 'ol/Overlay';
-import Feature from 'ol/Feature';
 
 import axios from 'axios';
 import moment from 'moment';
@@ -63,7 +62,7 @@ var provincesCentrLayer = new VectorImageLayer({
         const casi = parseInt(feature.get('totale_casi'));
         var radius;
         var fill = new Fill({color: 'rgba(255,68,68,.75)' });
-        var stroke = new Stroke({color: '#FFF', width: 1});
+        var stroke = new Stroke({color: '#CC0000', width: 1});
         if (casi == 0) {
             radius = null;
             fill = null;
@@ -82,8 +81,10 @@ var provincesCentrLayer = new VectorImageLayer({
             radius = 15
         } else if (casi >= 1001 && casi <= 2000) {
             radius = 18
-        } else {
+        } else if (casi >= 2001 && casi <= 3500) {
             radius = 20
+        } else {
+            radius = 23
         }
         
         return new Style({
@@ -108,7 +109,7 @@ var provincesLayer = new VectorImageLayer({
 })
 map.addLayer(provincesLayer)
 provincesLayer.set("name","Province")
-provincesLayer.setZIndex(10)
+provincesLayer.setZIndex(11)
 
 // Region polygons
 var regionsLayer = new VectorImageLayer({
@@ -122,7 +123,15 @@ var regionsLayer = new VectorImageLayer({
 });
 map.addLayer(regionsLayer)
 regionsLayer.set("name","Regioni")
-regionsLayer.setZIndex(11)
+regionsLayer.setZIndex(10)
+
+var zoomRegionLayer = new VectorImageLayer({
+    source: new VectorSource({
+        format:new GeoJSON()
+    })
+})
+map.addLayer(zoomRegionLayer)
+zoomRegionLayer.setZIndex(12);
 
 // Mouse move
 // ************************************************************
@@ -189,10 +198,32 @@ const regionDistribution = function(aggiornamento){
         regionsLayer.getSource().clear()
         // Spatial data
         var features = response.data.features;
+        // Calculate color scale domain
+        var color_scale_domain = []
+        features.forEach(function(e){
+            color_scale_domain.push(e.properties.totale_casi)
+        })
         var collection = {"type": "FeatureCollection", "features": features};
         var featureCollection = new GeoJSON({featureProjection:'EPSG:3857'}).readFeatures(collection);
         // Update regions layer
         regionsLayer.getSource().addFeatures(featureCollection);
+        var scale = chroma.scale('Reds').domain([0,Math.max.apply(Math, color_scale_domain)]);
+        regionsLayer.getSource().forEachFeature(function (feature) {
+            var regStyle;
+            if (feature.get('totale_casi') == 0){
+                regStyle = new Style({
+                    stroke: new Stroke({ color: "#37474F", width: 1 }),
+                    fill: new Fill({ color: '#98a1a6' })
+                }); 
+            } else {
+                var regColor = scale(feature.get('totale_casi')).hex(); 
+                regStyle = new Style({
+                    stroke: new Stroke({ color: "#37474F", width: 1 }),
+                    fill: new Fill({ color: regColor })
+                }); 
+            }
+            feature.setStyle(regStyle); // set feature Style
+        })
         // Regional Distribution Chart
         regionDistributionChart(features)
         // Regions filter
@@ -232,7 +263,7 @@ const provincesDistribution = function(aggiornamento){
             if (feature.get('totale_casi') == 0){
                 provStyle = new Style({
                     stroke: new Stroke({ color: "#37474F", width: 1 }),
-                    fill: new Fill({ color: 'rgba(255,255,255,0.75)' })
+                    fill: new Fill({ color: '#98a1a6' })
                 }); 
             } else {
                 var provColor = scale(feature.get('totale_casi')).hex(); 
@@ -243,7 +274,6 @@ const provincesDistribution = function(aggiornamento){
             }
             feature.setStyle(provStyle); // set feature Style
         });
-
         // Province Distribution Chart - To Do
         // regionDistributionChart(features)
     });
@@ -263,16 +293,14 @@ const provincesDistribution = function(aggiornamento){
     })
 }
 
-var zoomRegionLayer = new VectorImageLayer({
-    source: new VectorSource({
-        format:new GeoJSON()
-    }),
-    style: function(){
+const zoomToGeometry = function(reg, aggiornamento){
+    // Selection style
+    var selStyle = function(){
         var external = new Style({
 			stroke: new Stroke({
 				color: '#b71c1c',
 				width: 8
-			}),
+            }),
 			zIndex: 1
 		});
 		var internal = new Style({
@@ -285,27 +313,67 @@ var zoomRegionLayer = new VectorImageLayer({
 		});
 		return [external,internal]
     }
-})
-map.addLayer(zoomRegionLayer)
-zoomRegionLayer.setZIndex(12);
 
-const zoomToGeometry = function(reg){
-    zoomRegionLayer.getSource().clear();
-    var selected_region_feature = []
-    var features = regionsLayer.getSource().getFeatures();
-    features.forEach(feature =>{
-        if (feature.getProperties().codice_regione == reg){
-            selected_region_feature.push(feature)
-        }
-    });
-    zoomRegionLayer.getSource().addFeatures(selected_region_feature);
-    var extent = zoomRegionLayer.getSource().getExtent();
-	map.getView().fit(extent, map.getSize());
+    axios.get(url+'/regioni/map',{ params:{ data: aggiornamento } }).then(function(response){
+        // console.log(response)
+        zoomRegionLayer.getSource().clear();
+        var selected_region_feature = []
+        var features = response.data.features;
+        features.forEach(feature =>{
+            if (feature.properties.codice_regione == reg){
+                selected_region_feature.push(feature)
+            }
+        });
+        // console.log(selected_region_feature)
+        var collection = {"type": "FeatureCollection", "features": selected_region_feature};
+        var featureCollection = new GeoJSON({featureProjection:'EPSG:3857'}).readFeatures(collection);
+        zoomRegionLayer.getSource().addFeatures(featureCollection);
+        zoomRegionLayer.getSource().getFeatures()[0].setStyle(selStyle)
+        var extent = zoomRegionLayer.getSource().getExtent();
+        map.getView().fit(extent, map.getSize());
+    })
 }
 
 const zoomToItaly = function(){
     var boundingExtent = applyTransform(ItalyExtent, getTransform("EPSG:4326", "EPSG:3857"));
     map.getView().fit(boundingExtent, map.getSize());
 }
+
+// Layer switcher
+const layerBtn = document.querySelector("#layer-btn")
+const layerPanel = document.querySelector("#layer-panel")
+layerBtn.addEventListener('click',(e)=>{
+    // e.preventDefault()
+    if (layerPanel.style.visibility == 'hidden'){
+        layerPanel.style.visibility = 'visible'
+    } else {
+        layerPanel.style.visibility = 'hidden'
+    }    
+});
+
+document.querySelector("#prov-pt-toggler").addEventListener('change',(e)=>{
+    if(e.target.checked) {
+        provincesCentrLayer.setVisible(true)
+    } else {
+        provincesCentrLayer.setVisible(false)
+    }
+})
+
+document.querySelector("#prov-pl-toggler").addEventListener('change',(e)=>{
+    if(e.target.checked) {
+        provincesLayer.setVisible(true)
+    } else {
+        provincesLayer.setVisible(false)
+    }
+})
+
+document.querySelector("#reg-pl-toggler").addEventListener('change',(e)=>{
+    if(e.target.checked) {
+        regionsLayer.setVisible(true)
+    } else {
+        regionsLayer.setVisible(false)
+    }
+})
+
 
 export { regionDistribution, provincesDistribution, zoomToGeometry, zoomRegionLayer, zoomToItaly }
