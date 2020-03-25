@@ -10199,6 +10199,31 @@ ul.layer-list {
   padding: 0;
 }
 
+.legend-br {
+  border: 1px solid #4B515D;
+}
+
+#legend-container {
+  width: 100%;
+  position: relative;
+  margin-top: 5px;
+  text-align: center;
+  display: inline-block;
+}
+
+#legend-text {
+  position: relative;
+  font-size: 10px;
+  text-align: center;
+  margin-bottom: 2px;
+}
+
+.color-step {
+  display: inline-block;
+  height: 20px;
+  width: 10%;
+}
+
 .ol-control {
   border-radius: 1px !important;
   padding: 0px !important;

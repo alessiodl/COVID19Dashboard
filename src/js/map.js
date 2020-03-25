@@ -375,5 +375,13 @@ document.querySelector("#reg-pl-toggler").addEventListener('change',(e)=>{
     }
 })
 
+var legendContainer = document.querySelector('#legend-container')
+var legendColors = chroma.brewer.OrRd
+legendColors.forEach(color => {
+    var legendElement = '<div class="color-step" style="background-color:'+color+'"></div>'
+    legendContainer.innerHTML += legendElement
+})
+
+
 
 export { regionDistribution, provincesDistribution, zoomToGeometry, zoomRegionLayer, zoomToItaly }
