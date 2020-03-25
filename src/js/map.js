@@ -53,16 +53,20 @@ var popup = new Overlay({
 });
 map.addOverlay(popup);
 
-// Provinces centroids
-var provincesCentrLayer = new VectorImageLayer({
-    source: new VectorSource({
-        format: new GeoJSON()
-    }),
-    style: function(feature) {
+// Custer labels
+var getClusterLabel = function(feature){
+	var text = feature.get('totale_casi');
+	return text;
+};
+
+var clusterStyle = function(feature){
+
         const casi = parseInt(feature.get('totale_casi'));
+        var zoomlevel = map.getView().getZoom()
+
         var radius;
         var fill = new Fill({color: 'rgba(255,68,68,.75)' });
-        var stroke = new Stroke({color: '#CC0000', width: 1});
+        var stroke = new Stroke({color: '#FFF', width: 1});
         if (casi == 0) {
             radius = null;
             fill = null;
@@ -84,18 +88,43 @@ var provincesCentrLayer = new VectorImageLayer({
         } else if (casi >= 2001 && casi <= 3500) {
             radius = 20
         } else {
-            radius = 23
+            radius = 25
         }
         
-        return new Style({
+        var cluster = new Style({
             image: new Circle({
-                radius: radius,
+                radius: radius * zoomlevel * 0.18,
                 fill: fill,
 	            stroke: stroke
             })
+        });
+
+        var label = new Style({
+            text: new Text({
+		        textAlign: 'center',
+		        textBaseline: 'middle',
+		        font: '10px Verdana',
+		        overflow:false,
+                text: feature.get('totale_casi').toString(),
+		        fill: new Fill({color: '#000'}),
+		        stroke: new Stroke({color: '#FFF', width: 3})
+		     })
         })
-        
-    }
+
+        if (zoomlevel > 7){
+            return [cluster, label] 
+        } else {
+            return cluster
+        }
+	
+};
+
+// Provinces centroids
+var provincesCentrLayer = new VectorImageLayer({
+    source: new VectorSource({
+        format: new GeoJSON()
+    }),
+    style: clusterStyle
 });
 map.addLayer(provincesCentrLayer);
 provincesCentrLayer.set("name","Centroidi Province");
