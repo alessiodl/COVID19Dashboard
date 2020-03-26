@@ -58,31 +58,58 @@
         </div>
         <!-- Badges -->
         <div class="row">
-            <div class="col-6 col-xl-3 mt-1 pr-1">
+            <div class="col-3 col-xl-3 mt-1 pr-1">
                 <div class="card bg-info text-white h-100 mb-3 custom-shadow">
                     <div class="card-header">
-                        <i class="fas fa-tachometer-alt"></i> Contagiati
+                        <i class="far fa-calendar-alt"></i> Data
                     </div>
                     <div class="card-body m-auto d-flex align-items-center summary-container">
-                        <h2 class="text-center">
-                            <span id="tot-contagi"></span>
-                        </h2>
+                        <h4 class="text-center">
+                            <span id="data-at"></span>
+                        </h4>
                     </div>
                 </div>
             </div>
 
-            <div class="col-6 col-xl-3 mt-1 pl-1">
-                <div class="card bg-info text-white h-100 mb-3 custom-shadow">
+            <div class="col-3 col-xl-1 mt-1 pr-1 pl-1">
+                <div class="card bg-info-dark text-white h-100 mb-3 custom-shadow">
                     <div class="card-header">
-                        <i class="far fa-calendar-alt"></i> Aggiornamento
+                        <i class="fas fa-tachometer-alt"></i> Contagi
                     </div>
                     <div class="card-body m-auto d-flex align-items-center summary-container">
-                        <h2 class="text-center">
-                            <span id="data-at"></span>
-                        </h2>
+                        <h4 class="text-center">
+                            <span id="tot-contagi"></span>
+                        </h4>
                     </div>
                 </div>
             </div>
+
+            <div class="col-3 col-xl-1 mt-1 pr-1 pl-1">
+                <div class="card bg-warning-dark text-white h-100 mb-3 custom-shadow">
+                    <div class="card-header">
+                        <i class="fas fa-tachometer-alt"></i> Positivi
+                    </div>
+                    <div class="card-body m-auto d-flex align-items-center summary-container">
+                        <h4 class="text-center">
+                            <span id="tot-positivi"></span>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-3 col-xl-1 mt-1 pl-1">
+                <div class="card bg-danger text-white h-100 mb-3 custom-shadow">
+                    <div class="card-header">
+                        <i class="fas fa-tachometer-alt"></i> Nuovi
+                    </div>
+                    <div class="card-body m-auto d-flex align-items-center summary-container">
+                        <h4 class="text-center">
+                            <span id="nuovi-positivi"></span>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+
             <!-- Slider -->
             <div class="col-12 col-xl-6 mt-1">
                 <div class="card bg-info text-white h-100 mb-3 custom-shadow">
@@ -163,10 +190,10 @@
                                                     data-width="100%" data-none-selected-text="Selezionare una Regione">       
                                             </select>
                                         </div>
-                                        <div class="col-5 col-md-3 align-self-center">
+                                        <div class="col-4 col-md-3 align-self-center">
                                             <span id="tot-contagi-reg" class="text-white my-auto"></span>
                                         </div>
-                                        <div class="col-2 col-md-3">
+                                        <div class="col-4 col-md-3">
                                             <button id="reset-filters-btn" class="btn btn-primary btn-block btn-sm">Reset</button>
                                         </div>
                                     </div>

@@ -13,7 +13,8 @@ $theme-colors: (
   "primary": $app-base-color,
   "secondary": #5F497F,
   "tertiary": #BEA6A1,
-  "info-dark": #3F729B
+  "info-dark": #3F729B,
+  "warning-dark":#FF8800
 );
 // Vendor
 @import "../../node_modules/bootstrap/scss/bootstrap";

@@ -196,8 +196,12 @@ map.on('pointermove', function(e) {
 axios.get(url+'/andamento',{ params:{} }).then(function(response){
     var totale_casi = response.data[0].totale_casi;
     var aggiornamento = response.data[0].data;
+    var totale_attualmente_positivi = response.data[0].totale_attualmente_positivi
+    var nuovi_attualmente_positivi = response.data[0].nuovi_attualmente_positivi
     // Update total count
     document.querySelector("#tot-contagi").innerHTML = totale_casi
+    document.querySelector("#tot-positivi").innerHTML = totale_attualmente_positivi
+    document.querySelector("#nuovi-positivi").innerHTML = nuovi_attualmente_positivi
     // Update date
     document.querySelector("#data-at").innerHTML = moment(aggiornamento).format('DD MMM YYYY')
     // LastState Chart
