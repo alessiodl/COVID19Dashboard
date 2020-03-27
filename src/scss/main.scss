@@ -14,7 +14,9 @@ $theme-colors: (
   "secondary": #5F497F,
   "tertiary": #BEA6A1,
   "info-dark": #3F729B,
-  "warning-dark":#FF8800
+  "warning-dark":#FF8800,
+  "warning-darker":#e65100,
+  "danger-dark":#c62828
 );
 // Vendor
 @import "../../node_modules/bootstrap/scss/bootstrap";
