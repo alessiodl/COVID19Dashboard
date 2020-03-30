@@ -17,6 +17,7 @@
     "jquery": "^3.4.1",
     "lodash": "^4.17.15",
     "map": "^1.0.1",
+    "material-design-icons": "^3.0.1",
     "moment": "^2.24.0",
     "nouislider": "^14.1.1",
     "ol": "^6.1.1",
