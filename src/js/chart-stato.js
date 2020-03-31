@@ -39,7 +39,7 @@ const lastStateChartFn = function(data){
 
 let lastOutcomesChart;
 const lastOutcomesChartFn = function(data){
-    var positivi = data.totale_attualmente_positivi;
+    var positivi = data.totale_positivi;
     var deceduti = data.deceduti;
     var guariti  = data.dimessi_guariti;
     // Grafico

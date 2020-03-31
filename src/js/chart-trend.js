@@ -39,7 +39,7 @@ const trendChart = function(data){
         data.reverse()
         data.forEach(d =>{
             total_cases.push(d.totale_casi) 
-            positive.push(d.totale_attualmente_positivi)
+            positive.push(d.totale_positivi)
             dead.push(d.deceduti)
             recovered.push(d.dimessi_guariti)
             bullettin_dates.push(moment(d.data).format('DD MMM'))

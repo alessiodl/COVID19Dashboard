@@ -35,7 +35,7 @@ const regionDistributionChart = function(data){
         var labels = [];
         data.forEach(function(element){
             tot_casi.push(element.properties.totale_casi);
-            tot_positivi.push(element.properties.totale_attualmente_positivi);
+            tot_positivi.push(element.properties.totale_positivi);
             tamponi.push(element.properties.tamponi);
             if (element.properties.totale_casi > 0){
                 labels.push(element.properties.denominazione_regione);
