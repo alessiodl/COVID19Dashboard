@@ -9,6 +9,15 @@
   padding: 0.3rem 1.25rem !important;
 }
 
+.nav-tabs > li.active > a {
+  color: #3c5a78;
+  font-size: 16px;
+}
+
+.nav-tabs > li > a {
+  color: #FFF;
+}
+
 /*!
  * Bootstrap v4.4.1 (https://getbootstrap.com/)
  * Copyright 2011-2019 The Bootstrap Authors

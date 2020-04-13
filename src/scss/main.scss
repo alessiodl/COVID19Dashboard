@@ -18,6 +18,15 @@ $theme-colors: (
   "warning-darker":#e65100,
   "danger-dark":#c62828
 );
+
+.nav-tabs > li.active > a {
+    color: #3c5a78;
+    font-size: 16px;
+}
+.nav-tabs > li > a {
+    color: #FFF;
+}
+
 // Vendor
 @import "../../node_modules/bootstrap/scss/bootstrap";
 
