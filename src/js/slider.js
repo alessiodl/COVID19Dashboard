@@ -47,7 +47,9 @@ const createSlider = function(_data_){
                     return -1;
                 } else {
                     // Crea il pip con label solo per i giorni pari
-                    if (moment(value).format('DD')%2==0){
+                    // if (moment(value).format('DD')%2==0){
+                    // Crea il pip con label solo per le domeniche e i mercoledì
+                    if (moment(value).day()==0 || moment(value).day()==3){
                         return 1
                     }
                 }
