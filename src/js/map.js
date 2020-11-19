@@ -129,6 +129,7 @@ var provincesCentrLayer = new VectorImageLayer({
 map.addLayer(provincesCentrLayer);
 provincesCentrLayer.set("name","Centroidi Province");
 provincesCentrLayer.setZIndex(13)
+provincesCentrLayer.setVisible(false)
 
 // Provinces polygons
 var provincesLayer = new VectorImageLayer({

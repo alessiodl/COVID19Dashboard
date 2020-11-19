@@ -7,6 +7,7 @@ import { lastStateChartFn, lastOutcomesChartFn } from './chart-stato'
 //import { casesDiffusionChart } from './chart-trend'
 import { regionDistribution, provincesDistribution } from './map'
 import { regionsFilter } from './filters'
+import { months } from 'moment';
 
 const createSlider = function(_data_){
 
@@ -48,15 +49,15 @@ const createSlider = function(_data_){
                 } else {
                     // Crea il pip con label solo per i giorni pari
                     // if (moment(value).format('DD')%2==0){
-                    // Crea il pip con label solo per le domeniche e i mercoledì
-                    if (moment(value).day()==0 || moment(value).day()==3){
-                        return 1
+                    // Crea il pip con label solo per il lunedì
+                    if (moment(value).day()==0){
+                      return 1
                     }
                 }
             },
             format:{
                 to: function(value){
-                    return moment(value).format('DD/MM')
+                    return moment(value).format('DD MMM')
                 }
             },
             density:4
